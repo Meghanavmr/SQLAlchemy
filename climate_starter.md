@@ -16,6 +16,7 @@ import pandas as pd
 
 ```python
 import datetime as dt
+# from dateutil.relativedelta import relativedelta
 ```
 
 # Reflect Tables into SQLAlchemy ORM
@@ -27,6 +28,7 @@ import sqlalchemy
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import Session
 from sqlalchemy import create_engine, func
+from sqlalchemy import desc
 ```
 
 
@@ -80,7 +82,7 @@ first_row.__dict__
 
 
 
-    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x22f85c912e8>,
+    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x256602fa2b0>,
      'date': '2010-01-01',
      'id': 1,
      'prcp': 0.08,
@@ -98,7 +100,7 @@ first_row.__dict__
 
 
 
-    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x22f85c91c88>,
+    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x256602fac50>,
      'elevation': 3.0,
      'id': 1,
      'latitude': 21.2716,
@@ -1244,20 +1246,13 @@ climate_df.head()
 
 
 ```python
-# climate_df_srt_ind = pd.DataFrame(climate_df_srt, columns=['date', 'Precipitation'])
-# climate_df_srt.set_index('date', inplace=True)
-# climate_df_srt_ind.head()
-```
-
-
-```python
 climate_df.plot(kind ="line", figsize=(8,6))
 plt.yticks(np.arange(0, 4.5, step=0.5))
 plt.legend(loc="upper left")
 plt.tight_layout()
 plt.show()
 
-plt.savefig("hawaii_vacay.png",bbox_inches="tight")
+plt.savefig("hawaii_Date_Precipitation.png",bbox_inches="tight")
 ```
 
 
@@ -1382,7 +1377,7 @@ session.query(Measurement.station, Station.station).limit(10).all()
 # What are the most active stations?
 # List the stations and the counts in descending order.
 #func.max, func.avg, and func.count 
-from sqlalchemy import desc
+
 station_count = [Measurement.station,
                 func.count(Measurement.station).label("for_count")]
 
@@ -1446,7 +1441,687 @@ temp_stats
 ```python
 # Choose the station with the highest number of temperature observations.
 # Query the last 12 months of temperature observation data for this station and plot the results as a histogram
+sel = [Measurement.date, Measurement.prcp, Measurement.tobs, Measurement.station]
+highest_tobs_station_yearly = session.query(*sel).\
+                filter(Measurement.date > '2016-08-23').\
+                filter(Measurement.station == station_max).all()
 
+highest_tobs_station_yearly
+
+
+
+
+```
+
+
+
+
+    [('2016-08-24', 2.15, 77.0, 'USC00519281'),
+     ('2016-08-25', 0.06, 80.0, 'USC00519281'),
+     ('2016-08-26', 0.01, 80.0, 'USC00519281'),
+     ('2016-08-27', 0.12, 75.0, 'USC00519281'),
+     ('2016-08-28', 0.6, 73.0, 'USC00519281'),
+     ('2016-08-29', 0.35, 78.0, 'USC00519281'),
+     ('2016-08-30', 0.0, 77.0, 'USC00519281'),
+     ('2016-08-31', 0.24, 78.0, 'USC00519281'),
+     ('2016-09-01', 0.02, 80.0, 'USC00519281'),
+     ('2016-09-02', 0.01, 80.0, 'USC00519281'),
+     ('2016-09-03', 0.12, 78.0, 'USC00519281'),
+     ('2016-09-04', 0.14, 78.0, 'USC00519281'),
+     ('2016-09-05', 0.03, 78.0, 'USC00519281'),
+     ('2016-09-06', 0.11, 73.0, 'USC00519281'),
+     ('2016-09-07', 0.16, 74.0, 'USC00519281'),
+     ('2016-09-08', 0.07, 80.0, 'USC00519281'),
+     ('2016-09-09', 0.16, 79.0, 'USC00519281'),
+     ('2016-09-10', 0.09, 77.0, 'USC00519281'),
+     ('2016-09-11', 0.3, 80.0, 'USC00519281'),
+     ('2016-09-12', 0.31, 76.0, 'USC00519281'),
+     ('2016-09-13', 0.34, 79.0, 'USC00519281'),
+     ('2016-09-14', 2.33, 75.0, 'USC00519281'),
+     ('2016-09-15', 0.83, 79.0, 'USC00519281'),
+     ('2016-09-16', 0.06, 78.0, 'USC00519281'),
+     ('2016-09-17', 0.36, 79.0, 'USC00519281'),
+     ('2016-09-18', 0.07, 78.0, 'USC00519281'),
+     ('2016-09-19', 0.01, 78.0, 'USC00519281'),
+     ('2016-09-20', 0.22, 76.0, 'USC00519281'),
+     ('2016-09-21', 0.07, 74.0, 'USC00519281'),
+     ('2016-09-22', 0.34, 77.0, 'USC00519281'),
+     ('2016-09-23', 0.94, 78.0, 'USC00519281'),
+     ('2016-09-24', 0.01, 79.0, 'USC00519281'),
+     ('2016-09-25', 0.03, 79.0, 'USC00519281'),
+     ('2016-09-26', 0.17, 77.0, 'USC00519281'),
+     ('2016-09-27', 0.17, 80.0, 'USC00519281'),
+     ('2016-09-28', 0.0, 78.0, 'USC00519281'),
+     ('2016-09-29', 0.59, 78.0, 'USC00519281'),
+     ('2016-09-30', 0.25, 78.0, 'USC00519281'),
+     ('2016-10-01', 0.14, 77.0, 'USC00519281'),
+     ('2016-10-02', 0.06, 79.0, 'USC00519281'),
+     ('2016-10-03', 0.16, 79.0, 'USC00519281'),
+     ('2016-10-04', 0.03, 79.0, 'USC00519281'),
+     ('2016-10-05', 0.01, 79.0, 'USC00519281'),
+     ('2016-10-06', 0.0, 75.0, 'USC00519281'),
+     ('2016-10-07', 0.0, 76.0, 'USC00519281'),
+     ('2016-10-08', 0.0, 73.0, 'USC00519281'),
+     ('2016-10-09', 0.0, 72.0, 'USC00519281'),
+     ('2016-10-10', 0.0, 71.0, 'USC00519281'),
+     ('2016-10-11', 0.28, 77.0, 'USC00519281'),
+     ('2016-10-12', 0.03, 79.0, 'USC00519281'),
+     ('2016-10-13', 0.0, 78.0, 'USC00519281'),
+     ('2016-10-14', 0.0, 79.0, 'USC00519281'),
+     ('2016-10-15', 0.04, 77.0, 'USC00519281'),
+     ('2016-10-16', 0.0, 79.0, 'USC00519281'),
+     ('2016-10-17', 0.01, 77.0, 'USC00519281'),
+     ('2016-10-18', 0.02, 78.0, 'USC00519281'),
+     ('2016-10-19', 0.11, 78.0, 'USC00519281'),
+     ('2016-10-20', 0.0, 78.0, 'USC00519281'),
+     ('2016-10-21', 0.0, 78.0, 'USC00519281'),
+     ('2016-10-22', 0.15, 77.0, 'USC00519281'),
+     ('2016-10-23', 0.02, 74.0, 'USC00519281'),
+     ('2016-10-24', 0.08, 75.0, 'USC00519281'),
+     ('2016-10-25', 0.11, 76.0, 'USC00519281'),
+     ('2016-10-26', 0.01, 73.0, 'USC00519281'),
+     ('2016-10-27', 0.22, 76.0, 'USC00519281'),
+     ('2016-10-28', 0.05, 74.0, 'USC00519281'),
+     ('2016-10-29', 0.1, 77.0, 'USC00519281'),
+     ('2016-10-30', 0.16, 76.0, 'USC00519281'),
+     ('2016-10-31', 0.07, 76.0, 'USC00519281'),
+     ('2016-11-01', 0.1, 74.0, 'USC00519281'),
+     ('2016-11-02', 0.0, 75.0, 'USC00519281'),
+     ('2016-11-03', 0.0, 75.0, 'USC00519281'),
+     ('2016-11-04', 0.0, 75.0, 'USC00519281'),
+     ('2016-11-05', 0.03, 75.0, 'USC00519281'),
+     ('2016-11-06', 0.01, 71.0, 'USC00519281'),
+     ('2016-11-07', 0.0, 63.0, 'USC00519281'),
+     ('2016-11-08', 0.21, 70.0, 'USC00519281'),
+     ('2016-11-09', 0.11, 68.0, 'USC00519281'),
+     ('2016-11-10', 0.0, 67.0, 'USC00519281'),
+     ('2016-11-11', 0.0, 77.0, 'USC00519281'),
+     ('2016-11-12', 0.0, 74.0, 'USC00519281'),
+     ('2016-11-13', 0.0, 77.0, 'USC00519281'),
+     ('2016-11-14', 0.0, 76.0, 'USC00519281'),
+     ('2016-11-15', 0.0, 76.0, 'USC00519281'),
+     ('2016-11-16', 0.24, 75.0, 'USC00519281'),
+     ('2016-11-17', 0.01, 76.0, 'USC00519281'),
+     ('2016-11-18', 0.0, 75.0, 'USC00519281'),
+     ('2016-11-19', 0.11, 73.0, 'USC00519281'),
+     ('2016-11-20', 0.39, 75.0, 'USC00519281'),
+     ('2016-11-21', 0.11, 73.0, 'USC00519281'),
+     ('2016-11-22', 2.05, 75.0, 'USC00519281'),
+     ('2016-11-23', 0.25, 74.0, 'USC00519281'),
+     ('2016-11-24', 0.3, 75.0, 'USC00519281'),
+     ('2016-11-25', 0.08, 74.0, 'USC00519281'),
+     ('2016-11-26', 0.06, 75.0, 'USC00519281'),
+     ('2016-11-27', 0.17, 73.0, 'USC00519281'),
+     ('2016-11-28', 0.0, 75.0, 'USC00519281'),
+     ('2016-11-29', 0.09, 73.0, 'USC00519281'),
+     ('2016-11-30', 0.05, 73.0, 'USC00519281'),
+     ('2016-12-01', 0.37, 74.0, 'USC00519281'),
+     ('2016-12-02', 0.35, 70.0, 'USC00519281'),
+     ('2016-12-03', 0.77, 72.0, 'USC00519281'),
+     ('2016-12-04', 0.04, 70.0, 'USC00519281'),
+     ('2016-12-05', 0.22, 67.0, 'USC00519281'),
+     ('2016-12-06', 0.0, 67.0, 'USC00519281'),
+     ('2016-12-07', 0.12, 69.0, 'USC00519281'),
+     ('2016-12-08', 0.07, 70.0, 'USC00519281'),
+     ('2016-12-09', 0.31, 68.0, 'USC00519281'),
+     ('2016-12-10', 0.02, 69.0, 'USC00519281'),
+     ('2016-12-11', 0.0, 69.0, 'USC00519281'),
+     ('2016-12-12', 0.0, 66.0, 'USC00519281'),
+     ('2016-12-13', 0.04, 65.0, 'USC00519281'),
+     ('2016-12-14', 0.92, 68.0, 'USC00519281'),
+     ('2016-12-15', 0.14, 62.0, 'USC00519281'),
+     ('2016-12-16', 0.03, 75.0, 'USC00519281'),
+     ('2016-12-17', 0.07, 70.0, 'USC00519281'),
+     ('2016-12-18', 0.16, 69.0, 'USC00519281'),
+     ('2016-12-19', 0.03, 76.0, 'USC00519281'),
+     ('2016-12-20', 0.0, 76.0, 'USC00519281'),
+     ('2016-12-21', 0.11, 74.0, 'USC00519281'),
+     ('2016-12-22', 0.86, 73.0, 'USC00519281'),
+     ('2016-12-23', 0.24, 71.0, 'USC00519281'),
+     ('2016-12-24', 0.2, 74.0, 'USC00519281'),
+     ('2016-12-25', 0.02, 74.0, 'USC00519281'),
+     ('2016-12-26', 0.22, 72.0, 'USC00519281'),
+     ('2016-12-27', 0.05, 71.0, 'USC00519281'),
+     ('2016-12-28', 0.09, 72.0, 'USC00519281'),
+     ('2016-12-29', 0.52, 74.0, 'USC00519281'),
+     ('2016-12-30', 0.29, 69.0, 'USC00519281'),
+     ('2016-12-31', 0.25, 67.0, 'USC00519281'),
+     ('2017-01-01', 0.03, 72.0, 'USC00519281'),
+     ('2017-01-02', 0.01, 70.0, 'USC00519281'),
+     ('2017-01-03', 0.0, 64.0, 'USC00519281'),
+     ('2017-01-04', 0.0, 63.0, 'USC00519281'),
+     ('2017-01-05', 0.06, 63.0, 'USC00519281'),
+     ('2017-01-06', 0.1, 62.0, 'USC00519281'),
+     ('2017-01-07', 0.0, 70.0, 'USC00519281'),
+     ('2017-01-08', 0.0, 70.0, 'USC00519281'),
+     ('2017-01-09', 0.0, 62.0, 'USC00519281'),
+     ('2017-01-10', 0.0, 62.0, 'USC00519281'),
+     ('2017-01-11', 0.0, 63.0, 'USC00519281'),
+     ('2017-01-12', 0.0, 65.0, 'USC00519281'),
+     ('2017-01-13', 0.0, 69.0, 'USC00519281'),
+     ('2017-01-14', 0.01, 77.0, 'USC00519281'),
+     ('2017-01-15', 0.0, 70.0, 'USC00519281'),
+     ('2017-01-16', 0.0, 74.0, 'USC00519281'),
+     ('2017-01-17', 0.0, 69.0, 'USC00519281'),
+     ('2017-01-18', 0.0, 72.0, 'USC00519281'),
+     ('2017-01-19', 0.02, 71.0, 'USC00519281'),
+     ('2017-01-20', 0.0, 69.0, 'USC00519281'),
+     ('2017-01-21', 0.03, 71.0, 'USC00519281'),
+     ('2017-01-22', 0.09, 71.0, 'USC00519281'),
+     ('2017-01-23', 0.01, 72.0, 'USC00519281'),
+     ('2017-01-24', 0.13, 72.0, 'USC00519281'),
+     ('2017-01-25', 0.79, 69.0, 'USC00519281'),
+     ('2017-01-26', 0.0, 70.0, 'USC00519281'),
+     ('2017-01-27', 0.03, 66.0, 'USC00519281'),
+     ('2017-01-28', 0.0, 65.0, 'USC00519281'),
+     ('2017-01-29', 0.26, 69.0, 'USC00519281'),
+     ('2017-01-30', 0.0, 68.0, 'USC00519281'),
+     ('2017-01-31', 0.0, 68.0, 'USC00519281'),
+     ('2017-02-01', 0.0, 68.0, 'USC00519281'),
+     ('2017-02-02', 0.0, 59.0, 'USC00519281'),
+     ('2017-02-03', 0.0, 60.0, 'USC00519281'),
+     ('2017-02-04', 0.0, 70.0, 'USC00519281'),
+     ('2017-02-05', 0.0, 73.0, 'USC00519281'),
+     ('2017-02-06', 0.18, 75.0, 'USC00519281'),
+     ('2017-02-07', 1.32, 64.0, 'USC00519281'),
+     ('2017-02-08', 0.0, 59.0, 'USC00519281'),
+     ('2017-02-09', 0.0, 59.0, 'USC00519281'),
+     ('2017-02-10', 0.0, 62.0, 'USC00519281'),
+     ('2017-02-11', 1.73, 68.0, 'USC00519281'),
+     ('2017-02-12', 2.98, 70.0, 'USC00519281'),
+     ('2017-02-13', 0.01, 73.0, 'USC00519281'),
+     ('2017-02-14', 0.0, 79.0, 'USC00519281'),
+     ('2017-02-15', 0.01, 75.0, 'USC00519281'),
+     ('2017-02-16', 0.73, 65.0, 'USC00519281'),
+     ('2017-02-17', 0.13, 70.0, 'USC00519281'),
+     ('2017-02-18', 0.0, 74.0, 'USC00519281'),
+     ('2017-02-19', 0.09, 70.0, 'USC00519281'),
+     ('2017-02-20', 0.0, 70.0, 'USC00519281'),
+     ('2017-02-21', 0.0, 71.0, 'USC00519281'),
+     ('2017-02-22', 0.06, 71.0, 'USC00519281'),
+     ('2017-02-23', 0.0, 71.0, 'USC00519281'),
+     ('2017-02-24', 0.0, 69.0, 'USC00519281'),
+     ('2017-02-25', 0.0, 61.0, 'USC00519281'),
+     ('2017-02-26', 0.0, 67.0, 'USC00519281'),
+     ('2017-02-27', 0.0, 65.0, 'USC00519281'),
+     ('2017-02-28', 0.04, 72.0, 'USC00519281'),
+     ('2017-03-01', 2.12, 71.0, 'USC00519281'),
+     ('2017-03-02', 1.88, 73.0, 'USC00519281'),
+     ('2017-03-03', 0.27, 72.0, 'USC00519281'),
+     ('2017-03-04', 0.0, 77.0, 'USC00519281'),
+     ('2017-03-05', 0.41, 73.0, 'USC00519281'),
+     ('2017-03-06', 0.03, 67.0, 'USC00519281'),
+     ('2017-03-07', 0.0, 62.0, 'USC00519281'),
+     ('2017-03-08', 0.0, 64.0, 'USC00519281'),
+     ('2017-03-09', 0.65, 67.0, 'USC00519281'),
+     ('2017-03-10', 0.03, 66.0, 'USC00519281'),
+     ('2017-03-11', 0.01, 81.0, 'USC00519281'),
+     ('2017-03-12', 0.0, 69.0, 'USC00519281'),
+     ('2017-03-13', 0.0, 66.0, 'USC00519281'),
+     ('2017-03-14', 0.0, 67.0, 'USC00519281'),
+     ('2017-03-15', 0.06, 69.0, 'USC00519281'),
+     ('2017-03-16', 0.0, 66.0, 'USC00519281'),
+     ('2017-03-17', 0.12, 68.0, 'USC00519281'),
+     ('2017-03-18', 0.0, 65.0, 'USC00519281'),
+     ('2017-03-19', 0.0, 74.0, 'USC00519281'),
+     ('2017-03-20', 0.02, 69.0, 'USC00519281'),
+     ('2017-03-21', 0.09, 72.0, 'USC00519281'),
+     ('2017-03-22', 0.0, 73.0, 'USC00519281'),
+     ('2017-03-23', 0.0, 72.0, 'USC00519281'),
+     ('2017-03-24', 0.12, 71.0, 'USC00519281'),
+     ('2017-03-25', 0.93, 76.0, 'USC00519281'),
+     ('2017-03-26', 0.0, 77.0, 'USC00519281'),
+     ('2017-03-27', 0.01, 76.0, 'USC00519281'),
+     ('2017-03-28', 0.0, 74.0, 'USC00519281'),
+     ('2017-03-29', 0.01, 68.0, 'USC00519281'),
+     ('2017-03-30', 0.04, 73.0, 'USC00519281'),
+     ('2017-03-31', 0.01, 71.0, 'USC00519281'),
+     ('2017-04-01', 0.21, 74.0, 'USC00519281'),
+     ('2017-04-02', 0.0, 75.0, 'USC00519281'),
+     ('2017-04-03', 0.26, 70.0, 'USC00519281'),
+     ('2017-04-04', 0.09, 67.0, 'USC00519281'),
+     ('2017-04-05', 0.1, 71.0, 'USC00519281'),
+     ('2017-04-06', 0.06, 67.0, 'USC00519281'),
+     ('2017-04-07', 0.0, 74.0, 'USC00519281'),
+     ('2017-04-08', 0.0, 77.0, 'USC00519281'),
+     ('2017-04-09', 0.0, 78.0, 'USC00519281'),
+     ('2017-04-10', 0.01, 67.0, 'USC00519281'),
+     ('2017-04-11', 0.03, 70.0, 'USC00519281'),
+     ('2017-04-12', 0.11, 69.0, 'USC00519281'),
+     ('2017-04-13', 0.59, 69.0, 'USC00519281'),
+     ('2017-04-14', 2.3, 74.0, 'USC00519281'),
+     ('2017-04-15', 0.38, 78.0, 'USC00519281'),
+     ('2017-04-16', 0.47, 71.0, 'USC00519281'),
+     ('2017-04-17', 1.04, 67.0, 'USC00519281'),
+     ('2017-04-18', 2.03, 68.0, 'USC00519281'),
+     ('2017-04-19', 0.02, 67.0, 'USC00519281'),
+     ('2017-04-20', 0.05, 76.0, 'USC00519281'),
+     ('2017-04-21', 1.74, 69.0, 'USC00519281'),
+     ('2017-04-22', 1.58, 72.0, 'USC00519281'),
+     ('2017-04-23', 0.06, 76.0, 'USC00519281'),
+     ('2017-04-24', 0.01, 68.0, 'USC00519281'),
+     ('2017-04-25', 0.0, 72.0, 'USC00519281'),
+     ('2017-04-26', 0.02, 74.0, 'USC00519281'),
+     ('2017-04-27', 0.19, 70.0, 'USC00519281'),
+     ('2017-04-28', 0.76, 67.0, 'USC00519281'),
+     ('2017-04-29', 0.37, 72.0, 'USC00519281'),
+     ('2017-04-30', 1.04, 60.0, 'USC00519281'),
+     ('2017-05-01', 0.13, 65.0, 'USC00519281'),
+     ('2017-05-02', 0.01, 75.0, 'USC00519281'),
+     ('2017-05-03', 0.01, 70.0, 'USC00519281'),
+     ('2017-05-04', 0.0, 75.0, 'USC00519281'),
+     ('2017-05-05', 0.0, 70.0, 'USC00519281'),
+     ('2017-05-06', 0.0, 79.0, 'USC00519281'),
+     ('2017-05-07', 0.02, 75.0, 'USC00519281'),
+     ('2017-05-08', 0.73, 70.0, 'USC00519281'),
+     ('2017-05-09', 1.58, 67.0, 'USC00519281'),
+     ('2017-05-10', 0.2, 74.0, 'USC00519281'),
+     ('2017-05-11', 0.12, 70.0, 'USC00519281'),
+     ('2017-05-12', 0.02, 75.0, 'USC00519281'),
+     ('2017-05-13', 0.12, 76.0, 'USC00519281'),
+     ('2017-05-14', 0.17, 77.0, 'USC00519281'),
+     ('2017-05-15', 0.09, 74.0, 'USC00519281'),
+     ('2017-05-16', 0.03, 74.0, 'USC00519281'),
+     ('2017-05-17', 0.07, 74.0, 'USC00519281'),
+     ('2017-05-18', 0.13, 69.0, 'USC00519281'),
+     ('2017-05-19', 0.01, 68.0, 'USC00519281'),
+     ('2017-05-20', 0.02, 76.0, 'USC00519281'),
+     ('2017-05-21', 0.01, 74.0, 'USC00519281'),
+     ('2017-05-22', 0.06, 71.0, 'USC00519281'),
+     ('2017-05-23', 0.06, 71.0, 'USC00519281'),
+     ('2017-05-24', 0.3, 74.0, 'USC00519281'),
+     ('2017-05-25', 0.2, 74.0, 'USC00519281'),
+     ('2017-05-26', 0.0, 74.0, 'USC00519281'),
+     ('2017-05-27', 0.0, 74.0, 'USC00519281'),
+     ('2017-05-28', 0.08, 80.0, 'USC00519281'),
+     ('2017-05-29', 0.4, 74.0, 'USC00519281'),
+     ('2017-05-30', 1.12, 72.0, 'USC00519281'),
+     ('2017-05-31', 0.25, 75.0, 'USC00519281'),
+     ('2017-06-01', 0.0, 80.0, 'USC00519281'),
+     ('2017-06-02', 0.09, 76.0, 'USC00519281'),
+     ('2017-06-03', 0.08, 76.0, 'USC00519281'),
+     ('2017-06-04', 0.13, 77.0, 'USC00519281'),
+     ('2017-06-05', 0.05, 75.0, 'USC00519281'),
+     ('2017-06-06', 0.0, 75.0, 'USC00519281'),
+     ('2017-06-07', 0.0, 75.0, 'USC00519281'),
+     ('2017-06-08', 0.0, 75.0, 'USC00519281'),
+     ('2017-06-09', 0.02, 72.0, 'USC00519281'),
+     ('2017-06-10', 0.62, 74.0, 'USC00519281'),
+     ('2017-06-11', 0.74, 74.0, 'USC00519281'),
+     ('2017-06-12', 0.24, 74.0, 'USC00519281'),
+     ('2017-06-13', 0.24, 76.0, 'USC00519281'),
+     ('2017-06-14', 0.22, 74.0, 'USC00519281'),
+     ('2017-06-15', 0.55, 75.0, 'USC00519281'),
+     ('2017-06-16', 0.06, 73.0, 'USC00519281'),
+     ('2017-06-17', 0.07, 79.0, 'USC00519281'),
+     ('2017-06-18', 0.24, 75.0, 'USC00519281'),
+     ('2017-06-19', 0.08, 72.0, 'USC00519281'),
+     ('2017-06-20', 0.0, 72.0, 'USC00519281'),
+     ('2017-06-21', 0.19, 74.0, 'USC00519281'),
+     ('2017-06-22', 0.06, 72.0, 'USC00519281'),
+     ('2017-06-23', 0.12, 72.0, 'USC00519281'),
+     ('2017-06-24', 0.36, 77.0, 'USC00519281'),
+     ('2017-06-25', 0.02, 71.0, 'USC00519281'),
+     ('2017-06-26', 0.06, 73.0, 'USC00519281'),
+     ('2017-06-27', 0.01, 76.0, 'USC00519281'),
+     ('2017-06-28', 0.0, 77.0, 'USC00519281'),
+     ('2017-06-29', 0.0, 76.0, 'USC00519281'),
+     ('2017-06-30', 0.01, 76.0, 'USC00519281'),
+     ('2017-07-01', 0.08, 79.0, 'USC00519281'),
+     ('2017-07-02', 0.15, 81.0, 'USC00519281'),
+     ('2017-07-03', 0.15, 76.0, 'USC00519281'),
+     ('2017-07-04', 0.08, 78.0, 'USC00519281'),
+     ('2017-07-05', 0.0, 77.0, 'USC00519281'),
+     ('2017-07-06', 0.0, 74.0, 'USC00519281'),
+     ('2017-07-07', 0.18, 75.0, 'USC00519281'),
+     ('2017-07-08', 0.0, 78.0, 'USC00519281'),
+     ('2017-07-09', 0.11, 78.0, 'USC00519281'),
+     ('2017-07-10', 0.02, 69.0, 'USC00519281'),
+     ('2017-07-11', 0.02, 72.0, 'USC00519281'),
+     ('2017-07-12', 0.28, 74.0, 'USC00519281'),
+     ('2017-07-13', 0.32, 74.0, 'USC00519281'),
+     ('2017-07-14', 0.2, 76.0, 'USC00519281'),
+     ('2017-07-15', 0.05, 80.0, 'USC00519281'),
+     ('2017-07-16', 0.1, 80.0, 'USC00519281'),
+     ('2017-07-17', 0.21, 76.0, 'USC00519281'),
+     ('2017-07-18', 0.05, 76.0, 'USC00519281'),
+     ('2017-07-19', 0.05, 76.0, 'USC00519281'),
+     ('2017-07-20', 0.06, 77.0, 'USC00519281'),
+     ('2017-07-21', 0.03, 77.0, 'USC00519281'),
+     ('2017-07-22', 0.2, 77.0, 'USC00519281'),
+     ('2017-07-23', 0.2, 82.0, 'USC00519281'),
+     ('2017-07-24', 0.61, 75.0, 'USC00519281'),
+     ('2017-07-25', 0.11, 77.0, 'USC00519281'),
+     ('2017-07-26', 0.12, 75.0, 'USC00519281'),
+     ('2017-07-27', 0.01, 76.0, 'USC00519281'),
+     ('2017-07-28', 0.09, 81.0, 'USC00519281'),
+     ('2017-07-29', 0.23, 82.0, 'USC00519281'),
+     ('2017-07-30', 0.0, 81.0, 'USC00519281'),
+     ('2017-07-31', 0.0, 76.0, 'USC00519281'),
+     ('2017-08-04', 0.0, 77.0, 'USC00519281'),
+     ('2017-08-05', 0.06, 82.0, 'USC00519281'),
+     ('2017-08-06', 0.0, 83.0, 'USC00519281'),
+     ('2017-08-13', 0.0, 77.0, 'USC00519281'),
+     ('2017-08-14', 0.0, 77.0, 'USC00519281'),
+     ('2017-08-15', 0.32, 77.0, 'USC00519281'),
+     ('2017-08-16', 0.12, 76.0, 'USC00519281'),
+     ('2017-08-17', 0.01, 76.0, 'USC00519281'),
+     ('2017-08-18', 0.06, 79.0, 'USC00519281')]
+
+
+
+
+```python
+# highest_tobs_station_yearly[0:3]
+
+temp_list = []
+Frequency = []
+row_count = 0
+
+for row in highest_tobs_station_yearly:
+    row_count= row_count + 1     
+    temp_list.append(temp_list)
+    
+
+print(str(len(temp_list)))
+```
+
+    351
+    
+
+
+```python
+temp_freq_dict={"Temperature":temp_list}
+temp_freq_df = pd.DataFrame(temp_freq_dict)
+temp_freq_df.head()
+```
+
+
+    ---------------------------------------------------------------------------
+
+    KeyboardInterrupt                         Traceback (most recent call last)
+
+    <ipython-input-27-8d4c80afd2d7> in <module>()
+          1 temp_freq_dict={"Temperature":temp_list}
+          2 temp_freq_df = pd.DataFrame(temp_freq_dict)
+    ----> 3 temp_freq_df.head()
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\core\displayhook.py in __call__(self, result)
+        255             self.start_displayhook()
+        256             self.write_output_prompt()
+    --> 257             format_dict, md_dict = self.compute_format_data(result)
+        258             self.update_user_ns(result)
+        259             self.fill_exec_result(result)
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\core\displayhook.py in compute_format_data(self, result)
+        149 
+        150         """
+    --> 151         return self.shell.display_formatter.format(result)
+        152 
+        153     # This can be set to True by the write_output_prompt method in a subclass
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\core\formatters.py in format(self, obj, include, exclude)
+        178             md = None
+        179             try:
+    --> 180                 data = formatter(obj)
+        181             except:
+        182                 # FIXME: log the exception
+    
+
+    <decorator-gen-10> in __call__(self, obj)
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\core\formatters.py in catch_format_error(method, self, *args, **kwargs)
+        222     """show traceback on failed format call"""
+        223     try:
+    --> 224         r = method(self, *args, **kwargs)
+        225     except NotImplementedError:
+        226         # don't warn on NotImplementedErrors
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\core\formatters.py in __call__(self, obj)
+        700                 type_pprinters=self.type_printers,
+        701                 deferred_pprinters=self.deferred_printers)
+    --> 702             printer.pretty(obj)
+        703             printer.flush()
+        704             return stream.getvalue()
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\lib\pretty.py in pretty(self, obj)
+        393                             if callable(meth):
+        394                                 return meth(obj, self, cycle)
+    --> 395             return _default_pprint(obj, self, cycle)
+        396         finally:
+        397             self.end_group()
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\lib\pretty.py in _default_pprint(obj, p, cycle)
+        508     if _safe_getattr(klass, '__repr__', None) is not object.__repr__:
+        509         # A user-provided repr. Find newlines and replace them with p.break_()
+    --> 510         _repr_pprint(obj, p, cycle)
+        511         return
+        512     p.begin_group(1, '<')
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\lib\pretty.py in _repr_pprint(obj, p, cycle)
+        699     """A pprint that just redirects to the normal repr function."""
+        700     # Find newlines and replace them with p.break_()
+    --> 701     output = repr(obj)
+        702     for idx,output_line in enumerate(output.splitlines()):
+        703         if idx:
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\base.py in __repr__(self)
+         78         Yields Bytestring in Py2, Unicode String in py3.
+         79         """
+    ---> 80         return str(self)
+         81 
+         82 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\base.py in __str__(self)
+         57 
+         58         if compat.PY3:
+    ---> 59             return self.__unicode__()
+         60         return self.__bytes__()
+         61 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\frame.py in __unicode__(self)
+        634             width = None
+        635         self.to_string(buf=buf, max_rows=max_rows, max_cols=max_cols,
+    --> 636                        line_width=width, show_dimensions=show_dimensions)
+        637 
+        638         return buf.getvalue()
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\frame.py in to_string(self, buf, columns, col_space, header, index, na_rep, formatters, float_format, sparsify, index_names, justify, line_width, max_rows, max_cols, show_dimensions)
+       1673                                            max_cols=max_cols,
+       1674                                            show_dimensions=show_dimensions)
+    -> 1675         formatter.to_string()
+       1676 
+       1677         if buf is None:
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in to_string(self)
+        595         else:
+        596 
+    --> 597             strcols = self._to_str_columns()
+        598             if self.line_width is None:  # no need to wrap around just print
+        599                 # the whole frame
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in _to_str_columns(self)
+        530                 header_colwidth = max(self.col_space or 0,
+        531                                       *(self.adj.len(x) for x in cheader))
+    --> 532                 fmt_values = self._format_col(i)
+        533                 fmt_values = _make_fixed_width(fmt_values, self.justify,
+        534                                                minimum=header_colwidth,
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in _format_col(self, i)
+        706         return format_array(values_to_format, formatter,
+        707                             float_format=self.float_format, na_rep=self.na_rep,
+    --> 708                             space=self.col_space, decimal=self.decimal)
+        709 
+        710     def to_html(self, classes=None, notebook=False, border=None):
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in format_array(values, formatter, float_format, na_rep, digits, space, justify, decimal)
+       1820                         space=space, justify=justify, decimal=decimal)
+       1821 
+    -> 1822     return fmt_obj.get_result()
+       1823 
+       1824 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in get_result(self)
+       1840 
+       1841     def get_result(self):
+    -> 1842         fmt_values = self._format_strings()
+       1843         return _make_fixed_width(fmt_values, self.justify)
+       1844 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in _format_strings(self)
+       1886                 fmt_values.append(float_format(v))
+       1887             else:
+    -> 1888                 fmt_values.append(u' {v}'.format(v=_format(v)))
+       1889 
+       1890         return fmt_values
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in _format(x)
+       1868             else:
+       1869                 # object dtype
+    -> 1870                 return u'{x}'.format(x=formatter(x))
+       1871 
+       1872         vals = self.values
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\format.py in <lambda>(x)
+       1855         formatter = (
+       1856             self.formatter if self.formatter is not None else
+    -> 1857             (lambda x: pprint_thing(x, escape_chars=('\t', '\r', '\n'))))
+       1858 
+       1859         def _format(x):
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in pprint_thing(thing, _nest_lvl, escape_chars, default_escapes, quote_strings, max_seq_items)
+        220         result = _pprint_seq(thing, _nest_lvl, escape_chars=escape_chars,
+        221                              quote_strings=quote_strings,
+    --> 222                              max_seq_items=max_seq_items)
+        223     elif isinstance(thing, compat.string_types) and quote_strings:
+        224         if compat.PY3:
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in _pprint_seq(seq, _nest_lvl, max_seq_items, **kwds)
+        116     for i in range(min(nitems, len(seq))):  # handle sets, no slicing
+        117         r.append(pprint_thing(
+    --> 118             next(s), _nest_lvl + 1, max_seq_items=max_seq_items, **kwds))
+        119     body = ", ".join(r)
+        120 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in pprint_thing(thing, _nest_lvl, escape_chars, default_escapes, quote_strings, max_seq_items)
+        220         result = _pprint_seq(thing, _nest_lvl, escape_chars=escape_chars,
+        221                              quote_strings=quote_strings,
+    --> 222                              max_seq_items=max_seq_items)
+        223     elif isinstance(thing, compat.string_types) and quote_strings:
+        224         if compat.PY3:
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in _pprint_seq(seq, _nest_lvl, max_seq_items, **kwds)
+        116     for i in range(min(nitems, len(seq))):  # handle sets, no slicing
+        117         r.append(pprint_thing(
+    --> 118             next(s), _nest_lvl + 1, max_seq_items=max_seq_items, **kwds))
+        119     body = ", ".join(r)
+        120 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in pprint_thing(thing, _nest_lvl, escape_chars, default_escapes, quote_strings, max_seq_items)
+        220         result = _pprint_seq(thing, _nest_lvl, escape_chars=escape_chars,
+        221                              quote_strings=quote_strings,
+    --> 222                              max_seq_items=max_seq_items)
+        223     elif isinstance(thing, compat.string_types) and quote_strings:
+        224         if compat.PY3:
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in _pprint_seq(seq, _nest_lvl, max_seq_items, **kwds)
+        110         nitems = len(seq)
+        111     else:
+    --> 112         nitems = max_seq_items or get_option("max_seq_items") or len(seq)
+        113 
+        114     s = iter(seq)
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in __call__(self, *args, **kwds)
+        222 
+        223     def __call__(self, *args, **kwds):
+    --> 224         return self.__func__(*args, **kwds)
+        225 
+        226     @property
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in _get_option(pat, silent)
+         95 
+         96 def _get_option(pat, silent=False):
+    ---> 97     key = _get_single_key(pat, silent)
+         98 
+         99     # walk the nested dict
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in _get_single_key(pat, silent)
+         77 
+         78 def _get_single_key(pat, silent):
+    ---> 79     keys = _select_options(pat)
+         80     if len(keys) == 0:
+         81         if not silent:
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in _select_options(pat)
+        542         return keys
+        543 
+    --> 544     return [k for k in keys if re.search(pat, k, re.I)]
+        545 
+        546 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in <listcomp>(.0)
+        542         return keys
+        543 
+    --> 544     return [k for k in keys if re.search(pat, k, re.I)]
+        545 
+        546 
+    
+
+    C:\Anaconda3\envs\PythonData\lib\re.py in search(pattern, string, flags)
+        180     """Scan through string looking for a match to the pattern, returning
+        181     a match object, or None if no match was found."""
+    --> 182     return _compile(pattern, flags).search(string)
+        183 
+        184 def sub(pattern, repl, string, count=0, flags=0):
+    
+
+    C:\Anaconda3\envs\PythonData\lib\re.py in _compile(pattern, flags)
+        286 def _compile(pattern, flags):
+        287     # internal: compile pattern
+    --> 288     try:
+        289         p, loc = _cache[type(pattern), pattern, flags]
+        290         if loc is None or loc == _locale.setlocale(_locale.LC_CTYPE):
+    
+
+    KeyboardInterrupt: 
+
+
+
+```python
+temp_freq_df.plot.hist(by="Temperature", bins=12,title="Hawaii - Temperature vs. Frequency")
+plt.savefig("Temperature vs. Frequency.png")
+plt.show()
 ```
 
 
