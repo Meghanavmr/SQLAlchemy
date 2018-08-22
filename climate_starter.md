@@ -11,6 +11,7 @@ import matplotlib.pyplot as plt
 ```python
 import numpy as np
 import pandas as pd
+from collections import defaultdict
 ```
 
 
@@ -82,7 +83,7 @@ first_row.__dict__
 
 
 
-    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x256602fa2b0>,
+    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x1896292c3c8>,
      'date': '2010-01-01',
      'id': 1,
      'prcp': 0.08,
@@ -100,7 +101,7 @@ first_row.__dict__
 
 
 
-    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x256602fac50>,
+    {'_sa_instance_state': <sqlalchemy.orm.state.InstanceState at 0x1896292cdd8>,
      'elevation': 3.0,
      'id': 1,
      'latitude': 21.2716,
@@ -1250,7 +1251,7 @@ climate_df.plot(kind ="line", figsize=(8,6))
 plt.yticks(np.arange(0, 4.5, step=0.5))
 plt.legend(loc="upper left")
 plt.tight_layout()
-plt.show()
+# plt.show()
 
 plt.savefig("hawaii_Date_Precipitation.png",bbox_inches="tight")
 ```
@@ -1269,69 +1270,6 @@ plt.savefig("hawaii_Date_Precipitation.png",bbox_inches="tight")
 climate_df.describe()
 
 ```
-
-
-
-
-<div>
-<style scoped>
-    .dataframe tbody tr th:only-of-type {
-        vertical-align: middle;
-    }
-
-    .dataframe tbody tr th {
-        vertical-align: top;
-    }
-
-    .dataframe thead th {
-        text-align: right;
-    }
-</style>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>Precipitation</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>count</th>
-      <td>2015.000000</td>
-    </tr>
-    <tr>
-      <th>mean</th>
-      <td>0.176462</td>
-    </tr>
-    <tr>
-      <th>std</th>
-      <td>0.460288</td>
-    </tr>
-    <tr>
-      <th>min</th>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>25%</th>
-      <td>0.000000</td>
-    </tr>
-    <tr>
-      <th>50%</th>
-      <td>0.020000</td>
-    </tr>
-    <tr>
-      <th>75%</th>
-      <td>0.130000</td>
-    </tr>
-    <tr>
-      <th>max</th>
-      <td>6.700000</td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-
 
 
 ```python
@@ -1441,7 +1379,7 @@ temp_stats
 ```python
 # Choose the station with the highest number of temperature observations.
 # Query the last 12 months of temperature observation data for this station and plot the results as a histogram
-sel = [Measurement.date, Measurement.prcp, Measurement.tobs, Measurement.station]
+sel = [Measurement.date, Measurement.tobs]
 highest_tobs_station_yearly = session.query(*sel).\
                 filter(Measurement.date > '2016-08-23').\
                 filter(Measurement.station == station_max).all()
@@ -1456,384 +1394,1548 @@ highest_tobs_station_yearly
 
 
 
-    [('2016-08-24', 2.15, 77.0, 'USC00519281'),
-     ('2016-08-25', 0.06, 80.0, 'USC00519281'),
-     ('2016-08-26', 0.01, 80.0, 'USC00519281'),
-     ('2016-08-27', 0.12, 75.0, 'USC00519281'),
-     ('2016-08-28', 0.6, 73.0, 'USC00519281'),
-     ('2016-08-29', 0.35, 78.0, 'USC00519281'),
-     ('2016-08-30', 0.0, 77.0, 'USC00519281'),
-     ('2016-08-31', 0.24, 78.0, 'USC00519281'),
-     ('2016-09-01', 0.02, 80.0, 'USC00519281'),
-     ('2016-09-02', 0.01, 80.0, 'USC00519281'),
-     ('2016-09-03', 0.12, 78.0, 'USC00519281'),
-     ('2016-09-04', 0.14, 78.0, 'USC00519281'),
-     ('2016-09-05', 0.03, 78.0, 'USC00519281'),
-     ('2016-09-06', 0.11, 73.0, 'USC00519281'),
-     ('2016-09-07', 0.16, 74.0, 'USC00519281'),
-     ('2016-09-08', 0.07, 80.0, 'USC00519281'),
-     ('2016-09-09', 0.16, 79.0, 'USC00519281'),
-     ('2016-09-10', 0.09, 77.0, 'USC00519281'),
-     ('2016-09-11', 0.3, 80.0, 'USC00519281'),
-     ('2016-09-12', 0.31, 76.0, 'USC00519281'),
-     ('2016-09-13', 0.34, 79.0, 'USC00519281'),
-     ('2016-09-14', 2.33, 75.0, 'USC00519281'),
-     ('2016-09-15', 0.83, 79.0, 'USC00519281'),
-     ('2016-09-16', 0.06, 78.0, 'USC00519281'),
-     ('2016-09-17', 0.36, 79.0, 'USC00519281'),
-     ('2016-09-18', 0.07, 78.0, 'USC00519281'),
-     ('2016-09-19', 0.01, 78.0, 'USC00519281'),
-     ('2016-09-20', 0.22, 76.0, 'USC00519281'),
-     ('2016-09-21', 0.07, 74.0, 'USC00519281'),
-     ('2016-09-22', 0.34, 77.0, 'USC00519281'),
-     ('2016-09-23', 0.94, 78.0, 'USC00519281'),
-     ('2016-09-24', 0.01, 79.0, 'USC00519281'),
-     ('2016-09-25', 0.03, 79.0, 'USC00519281'),
-     ('2016-09-26', 0.17, 77.0, 'USC00519281'),
-     ('2016-09-27', 0.17, 80.0, 'USC00519281'),
-     ('2016-09-28', 0.0, 78.0, 'USC00519281'),
-     ('2016-09-29', 0.59, 78.0, 'USC00519281'),
-     ('2016-09-30', 0.25, 78.0, 'USC00519281'),
-     ('2016-10-01', 0.14, 77.0, 'USC00519281'),
-     ('2016-10-02', 0.06, 79.0, 'USC00519281'),
-     ('2016-10-03', 0.16, 79.0, 'USC00519281'),
-     ('2016-10-04', 0.03, 79.0, 'USC00519281'),
-     ('2016-10-05', 0.01, 79.0, 'USC00519281'),
-     ('2016-10-06', 0.0, 75.0, 'USC00519281'),
-     ('2016-10-07', 0.0, 76.0, 'USC00519281'),
-     ('2016-10-08', 0.0, 73.0, 'USC00519281'),
-     ('2016-10-09', 0.0, 72.0, 'USC00519281'),
-     ('2016-10-10', 0.0, 71.0, 'USC00519281'),
-     ('2016-10-11', 0.28, 77.0, 'USC00519281'),
-     ('2016-10-12', 0.03, 79.0, 'USC00519281'),
-     ('2016-10-13', 0.0, 78.0, 'USC00519281'),
-     ('2016-10-14', 0.0, 79.0, 'USC00519281'),
-     ('2016-10-15', 0.04, 77.0, 'USC00519281'),
-     ('2016-10-16', 0.0, 79.0, 'USC00519281'),
-     ('2016-10-17', 0.01, 77.0, 'USC00519281'),
-     ('2016-10-18', 0.02, 78.0, 'USC00519281'),
-     ('2016-10-19', 0.11, 78.0, 'USC00519281'),
-     ('2016-10-20', 0.0, 78.0, 'USC00519281'),
-     ('2016-10-21', 0.0, 78.0, 'USC00519281'),
-     ('2016-10-22', 0.15, 77.0, 'USC00519281'),
-     ('2016-10-23', 0.02, 74.0, 'USC00519281'),
-     ('2016-10-24', 0.08, 75.0, 'USC00519281'),
-     ('2016-10-25', 0.11, 76.0, 'USC00519281'),
-     ('2016-10-26', 0.01, 73.0, 'USC00519281'),
-     ('2016-10-27', 0.22, 76.0, 'USC00519281'),
-     ('2016-10-28', 0.05, 74.0, 'USC00519281'),
-     ('2016-10-29', 0.1, 77.0, 'USC00519281'),
-     ('2016-10-30', 0.16, 76.0, 'USC00519281'),
-     ('2016-10-31', 0.07, 76.0, 'USC00519281'),
-     ('2016-11-01', 0.1, 74.0, 'USC00519281'),
-     ('2016-11-02', 0.0, 75.0, 'USC00519281'),
-     ('2016-11-03', 0.0, 75.0, 'USC00519281'),
-     ('2016-11-04', 0.0, 75.0, 'USC00519281'),
-     ('2016-11-05', 0.03, 75.0, 'USC00519281'),
-     ('2016-11-06', 0.01, 71.0, 'USC00519281'),
-     ('2016-11-07', 0.0, 63.0, 'USC00519281'),
-     ('2016-11-08', 0.21, 70.0, 'USC00519281'),
-     ('2016-11-09', 0.11, 68.0, 'USC00519281'),
-     ('2016-11-10', 0.0, 67.0, 'USC00519281'),
-     ('2016-11-11', 0.0, 77.0, 'USC00519281'),
-     ('2016-11-12', 0.0, 74.0, 'USC00519281'),
-     ('2016-11-13', 0.0, 77.0, 'USC00519281'),
-     ('2016-11-14', 0.0, 76.0, 'USC00519281'),
-     ('2016-11-15', 0.0, 76.0, 'USC00519281'),
-     ('2016-11-16', 0.24, 75.0, 'USC00519281'),
-     ('2016-11-17', 0.01, 76.0, 'USC00519281'),
-     ('2016-11-18', 0.0, 75.0, 'USC00519281'),
-     ('2016-11-19', 0.11, 73.0, 'USC00519281'),
-     ('2016-11-20', 0.39, 75.0, 'USC00519281'),
-     ('2016-11-21', 0.11, 73.0, 'USC00519281'),
-     ('2016-11-22', 2.05, 75.0, 'USC00519281'),
-     ('2016-11-23', 0.25, 74.0, 'USC00519281'),
-     ('2016-11-24', 0.3, 75.0, 'USC00519281'),
-     ('2016-11-25', 0.08, 74.0, 'USC00519281'),
-     ('2016-11-26', 0.06, 75.0, 'USC00519281'),
-     ('2016-11-27', 0.17, 73.0, 'USC00519281'),
-     ('2016-11-28', 0.0, 75.0, 'USC00519281'),
-     ('2016-11-29', 0.09, 73.0, 'USC00519281'),
-     ('2016-11-30', 0.05, 73.0, 'USC00519281'),
-     ('2016-12-01', 0.37, 74.0, 'USC00519281'),
-     ('2016-12-02', 0.35, 70.0, 'USC00519281'),
-     ('2016-12-03', 0.77, 72.0, 'USC00519281'),
-     ('2016-12-04', 0.04, 70.0, 'USC00519281'),
-     ('2016-12-05', 0.22, 67.0, 'USC00519281'),
-     ('2016-12-06', 0.0, 67.0, 'USC00519281'),
-     ('2016-12-07', 0.12, 69.0, 'USC00519281'),
-     ('2016-12-08', 0.07, 70.0, 'USC00519281'),
-     ('2016-12-09', 0.31, 68.0, 'USC00519281'),
-     ('2016-12-10', 0.02, 69.0, 'USC00519281'),
-     ('2016-12-11', 0.0, 69.0, 'USC00519281'),
-     ('2016-12-12', 0.0, 66.0, 'USC00519281'),
-     ('2016-12-13', 0.04, 65.0, 'USC00519281'),
-     ('2016-12-14', 0.92, 68.0, 'USC00519281'),
-     ('2016-12-15', 0.14, 62.0, 'USC00519281'),
-     ('2016-12-16', 0.03, 75.0, 'USC00519281'),
-     ('2016-12-17', 0.07, 70.0, 'USC00519281'),
-     ('2016-12-18', 0.16, 69.0, 'USC00519281'),
-     ('2016-12-19', 0.03, 76.0, 'USC00519281'),
-     ('2016-12-20', 0.0, 76.0, 'USC00519281'),
-     ('2016-12-21', 0.11, 74.0, 'USC00519281'),
-     ('2016-12-22', 0.86, 73.0, 'USC00519281'),
-     ('2016-12-23', 0.24, 71.0, 'USC00519281'),
-     ('2016-12-24', 0.2, 74.0, 'USC00519281'),
-     ('2016-12-25', 0.02, 74.0, 'USC00519281'),
-     ('2016-12-26', 0.22, 72.0, 'USC00519281'),
-     ('2016-12-27', 0.05, 71.0, 'USC00519281'),
-     ('2016-12-28', 0.09, 72.0, 'USC00519281'),
-     ('2016-12-29', 0.52, 74.0, 'USC00519281'),
-     ('2016-12-30', 0.29, 69.0, 'USC00519281'),
-     ('2016-12-31', 0.25, 67.0, 'USC00519281'),
-     ('2017-01-01', 0.03, 72.0, 'USC00519281'),
-     ('2017-01-02', 0.01, 70.0, 'USC00519281'),
-     ('2017-01-03', 0.0, 64.0, 'USC00519281'),
-     ('2017-01-04', 0.0, 63.0, 'USC00519281'),
-     ('2017-01-05', 0.06, 63.0, 'USC00519281'),
-     ('2017-01-06', 0.1, 62.0, 'USC00519281'),
-     ('2017-01-07', 0.0, 70.0, 'USC00519281'),
-     ('2017-01-08', 0.0, 70.0, 'USC00519281'),
-     ('2017-01-09', 0.0, 62.0, 'USC00519281'),
-     ('2017-01-10', 0.0, 62.0, 'USC00519281'),
-     ('2017-01-11', 0.0, 63.0, 'USC00519281'),
-     ('2017-01-12', 0.0, 65.0, 'USC00519281'),
-     ('2017-01-13', 0.0, 69.0, 'USC00519281'),
-     ('2017-01-14', 0.01, 77.0, 'USC00519281'),
-     ('2017-01-15', 0.0, 70.0, 'USC00519281'),
-     ('2017-01-16', 0.0, 74.0, 'USC00519281'),
-     ('2017-01-17', 0.0, 69.0, 'USC00519281'),
-     ('2017-01-18', 0.0, 72.0, 'USC00519281'),
-     ('2017-01-19', 0.02, 71.0, 'USC00519281'),
-     ('2017-01-20', 0.0, 69.0, 'USC00519281'),
-     ('2017-01-21', 0.03, 71.0, 'USC00519281'),
-     ('2017-01-22', 0.09, 71.0, 'USC00519281'),
-     ('2017-01-23', 0.01, 72.0, 'USC00519281'),
-     ('2017-01-24', 0.13, 72.0, 'USC00519281'),
-     ('2017-01-25', 0.79, 69.0, 'USC00519281'),
-     ('2017-01-26', 0.0, 70.0, 'USC00519281'),
-     ('2017-01-27', 0.03, 66.0, 'USC00519281'),
-     ('2017-01-28', 0.0, 65.0, 'USC00519281'),
-     ('2017-01-29', 0.26, 69.0, 'USC00519281'),
-     ('2017-01-30', 0.0, 68.0, 'USC00519281'),
-     ('2017-01-31', 0.0, 68.0, 'USC00519281'),
-     ('2017-02-01', 0.0, 68.0, 'USC00519281'),
-     ('2017-02-02', 0.0, 59.0, 'USC00519281'),
-     ('2017-02-03', 0.0, 60.0, 'USC00519281'),
-     ('2017-02-04', 0.0, 70.0, 'USC00519281'),
-     ('2017-02-05', 0.0, 73.0, 'USC00519281'),
-     ('2017-02-06', 0.18, 75.0, 'USC00519281'),
-     ('2017-02-07', 1.32, 64.0, 'USC00519281'),
-     ('2017-02-08', 0.0, 59.0, 'USC00519281'),
-     ('2017-02-09', 0.0, 59.0, 'USC00519281'),
-     ('2017-02-10', 0.0, 62.0, 'USC00519281'),
-     ('2017-02-11', 1.73, 68.0, 'USC00519281'),
-     ('2017-02-12', 2.98, 70.0, 'USC00519281'),
-     ('2017-02-13', 0.01, 73.0, 'USC00519281'),
-     ('2017-02-14', 0.0, 79.0, 'USC00519281'),
-     ('2017-02-15', 0.01, 75.0, 'USC00519281'),
-     ('2017-02-16', 0.73, 65.0, 'USC00519281'),
-     ('2017-02-17', 0.13, 70.0, 'USC00519281'),
-     ('2017-02-18', 0.0, 74.0, 'USC00519281'),
-     ('2017-02-19', 0.09, 70.0, 'USC00519281'),
-     ('2017-02-20', 0.0, 70.0, 'USC00519281'),
-     ('2017-02-21', 0.0, 71.0, 'USC00519281'),
-     ('2017-02-22', 0.06, 71.0, 'USC00519281'),
-     ('2017-02-23', 0.0, 71.0, 'USC00519281'),
-     ('2017-02-24', 0.0, 69.0, 'USC00519281'),
-     ('2017-02-25', 0.0, 61.0, 'USC00519281'),
-     ('2017-02-26', 0.0, 67.0, 'USC00519281'),
-     ('2017-02-27', 0.0, 65.0, 'USC00519281'),
-     ('2017-02-28', 0.04, 72.0, 'USC00519281'),
-     ('2017-03-01', 2.12, 71.0, 'USC00519281'),
-     ('2017-03-02', 1.88, 73.0, 'USC00519281'),
-     ('2017-03-03', 0.27, 72.0, 'USC00519281'),
-     ('2017-03-04', 0.0, 77.0, 'USC00519281'),
-     ('2017-03-05', 0.41, 73.0, 'USC00519281'),
-     ('2017-03-06', 0.03, 67.0, 'USC00519281'),
-     ('2017-03-07', 0.0, 62.0, 'USC00519281'),
-     ('2017-03-08', 0.0, 64.0, 'USC00519281'),
-     ('2017-03-09', 0.65, 67.0, 'USC00519281'),
-     ('2017-03-10', 0.03, 66.0, 'USC00519281'),
-     ('2017-03-11', 0.01, 81.0, 'USC00519281'),
-     ('2017-03-12', 0.0, 69.0, 'USC00519281'),
-     ('2017-03-13', 0.0, 66.0, 'USC00519281'),
-     ('2017-03-14', 0.0, 67.0, 'USC00519281'),
-     ('2017-03-15', 0.06, 69.0, 'USC00519281'),
-     ('2017-03-16', 0.0, 66.0, 'USC00519281'),
-     ('2017-03-17', 0.12, 68.0, 'USC00519281'),
-     ('2017-03-18', 0.0, 65.0, 'USC00519281'),
-     ('2017-03-19', 0.0, 74.0, 'USC00519281'),
-     ('2017-03-20', 0.02, 69.0, 'USC00519281'),
-     ('2017-03-21', 0.09, 72.0, 'USC00519281'),
-     ('2017-03-22', 0.0, 73.0, 'USC00519281'),
-     ('2017-03-23', 0.0, 72.0, 'USC00519281'),
-     ('2017-03-24', 0.12, 71.0, 'USC00519281'),
-     ('2017-03-25', 0.93, 76.0, 'USC00519281'),
-     ('2017-03-26', 0.0, 77.0, 'USC00519281'),
-     ('2017-03-27', 0.01, 76.0, 'USC00519281'),
-     ('2017-03-28', 0.0, 74.0, 'USC00519281'),
-     ('2017-03-29', 0.01, 68.0, 'USC00519281'),
-     ('2017-03-30', 0.04, 73.0, 'USC00519281'),
-     ('2017-03-31', 0.01, 71.0, 'USC00519281'),
-     ('2017-04-01', 0.21, 74.0, 'USC00519281'),
-     ('2017-04-02', 0.0, 75.0, 'USC00519281'),
-     ('2017-04-03', 0.26, 70.0, 'USC00519281'),
-     ('2017-04-04', 0.09, 67.0, 'USC00519281'),
-     ('2017-04-05', 0.1, 71.0, 'USC00519281'),
-     ('2017-04-06', 0.06, 67.0, 'USC00519281'),
-     ('2017-04-07', 0.0, 74.0, 'USC00519281'),
-     ('2017-04-08', 0.0, 77.0, 'USC00519281'),
-     ('2017-04-09', 0.0, 78.0, 'USC00519281'),
-     ('2017-04-10', 0.01, 67.0, 'USC00519281'),
-     ('2017-04-11', 0.03, 70.0, 'USC00519281'),
-     ('2017-04-12', 0.11, 69.0, 'USC00519281'),
-     ('2017-04-13', 0.59, 69.0, 'USC00519281'),
-     ('2017-04-14', 2.3, 74.0, 'USC00519281'),
-     ('2017-04-15', 0.38, 78.0, 'USC00519281'),
-     ('2017-04-16', 0.47, 71.0, 'USC00519281'),
-     ('2017-04-17', 1.04, 67.0, 'USC00519281'),
-     ('2017-04-18', 2.03, 68.0, 'USC00519281'),
-     ('2017-04-19', 0.02, 67.0, 'USC00519281'),
-     ('2017-04-20', 0.05, 76.0, 'USC00519281'),
-     ('2017-04-21', 1.74, 69.0, 'USC00519281'),
-     ('2017-04-22', 1.58, 72.0, 'USC00519281'),
-     ('2017-04-23', 0.06, 76.0, 'USC00519281'),
-     ('2017-04-24', 0.01, 68.0, 'USC00519281'),
-     ('2017-04-25', 0.0, 72.0, 'USC00519281'),
-     ('2017-04-26', 0.02, 74.0, 'USC00519281'),
-     ('2017-04-27', 0.19, 70.0, 'USC00519281'),
-     ('2017-04-28', 0.76, 67.0, 'USC00519281'),
-     ('2017-04-29', 0.37, 72.0, 'USC00519281'),
-     ('2017-04-30', 1.04, 60.0, 'USC00519281'),
-     ('2017-05-01', 0.13, 65.0, 'USC00519281'),
-     ('2017-05-02', 0.01, 75.0, 'USC00519281'),
-     ('2017-05-03', 0.01, 70.0, 'USC00519281'),
-     ('2017-05-04', 0.0, 75.0, 'USC00519281'),
-     ('2017-05-05', 0.0, 70.0, 'USC00519281'),
-     ('2017-05-06', 0.0, 79.0, 'USC00519281'),
-     ('2017-05-07', 0.02, 75.0, 'USC00519281'),
-     ('2017-05-08', 0.73, 70.0, 'USC00519281'),
-     ('2017-05-09', 1.58, 67.0, 'USC00519281'),
-     ('2017-05-10', 0.2, 74.0, 'USC00519281'),
-     ('2017-05-11', 0.12, 70.0, 'USC00519281'),
-     ('2017-05-12', 0.02, 75.0, 'USC00519281'),
-     ('2017-05-13', 0.12, 76.0, 'USC00519281'),
-     ('2017-05-14', 0.17, 77.0, 'USC00519281'),
-     ('2017-05-15', 0.09, 74.0, 'USC00519281'),
-     ('2017-05-16', 0.03, 74.0, 'USC00519281'),
-     ('2017-05-17', 0.07, 74.0, 'USC00519281'),
-     ('2017-05-18', 0.13, 69.0, 'USC00519281'),
-     ('2017-05-19', 0.01, 68.0, 'USC00519281'),
-     ('2017-05-20', 0.02, 76.0, 'USC00519281'),
-     ('2017-05-21', 0.01, 74.0, 'USC00519281'),
-     ('2017-05-22', 0.06, 71.0, 'USC00519281'),
-     ('2017-05-23', 0.06, 71.0, 'USC00519281'),
-     ('2017-05-24', 0.3, 74.0, 'USC00519281'),
-     ('2017-05-25', 0.2, 74.0, 'USC00519281'),
-     ('2017-05-26', 0.0, 74.0, 'USC00519281'),
-     ('2017-05-27', 0.0, 74.0, 'USC00519281'),
-     ('2017-05-28', 0.08, 80.0, 'USC00519281'),
-     ('2017-05-29', 0.4, 74.0, 'USC00519281'),
-     ('2017-05-30', 1.12, 72.0, 'USC00519281'),
-     ('2017-05-31', 0.25, 75.0, 'USC00519281'),
-     ('2017-06-01', 0.0, 80.0, 'USC00519281'),
-     ('2017-06-02', 0.09, 76.0, 'USC00519281'),
-     ('2017-06-03', 0.08, 76.0, 'USC00519281'),
-     ('2017-06-04', 0.13, 77.0, 'USC00519281'),
-     ('2017-06-05', 0.05, 75.0, 'USC00519281'),
-     ('2017-06-06', 0.0, 75.0, 'USC00519281'),
-     ('2017-06-07', 0.0, 75.0, 'USC00519281'),
-     ('2017-06-08', 0.0, 75.0, 'USC00519281'),
-     ('2017-06-09', 0.02, 72.0, 'USC00519281'),
-     ('2017-06-10', 0.62, 74.0, 'USC00519281'),
-     ('2017-06-11', 0.74, 74.0, 'USC00519281'),
-     ('2017-06-12', 0.24, 74.0, 'USC00519281'),
-     ('2017-06-13', 0.24, 76.0, 'USC00519281'),
-     ('2017-06-14', 0.22, 74.0, 'USC00519281'),
-     ('2017-06-15', 0.55, 75.0, 'USC00519281'),
-     ('2017-06-16', 0.06, 73.0, 'USC00519281'),
-     ('2017-06-17', 0.07, 79.0, 'USC00519281'),
-     ('2017-06-18', 0.24, 75.0, 'USC00519281'),
-     ('2017-06-19', 0.08, 72.0, 'USC00519281'),
-     ('2017-06-20', 0.0, 72.0, 'USC00519281'),
-     ('2017-06-21', 0.19, 74.0, 'USC00519281'),
-     ('2017-06-22', 0.06, 72.0, 'USC00519281'),
-     ('2017-06-23', 0.12, 72.0, 'USC00519281'),
-     ('2017-06-24', 0.36, 77.0, 'USC00519281'),
-     ('2017-06-25', 0.02, 71.0, 'USC00519281'),
-     ('2017-06-26', 0.06, 73.0, 'USC00519281'),
-     ('2017-06-27', 0.01, 76.0, 'USC00519281'),
-     ('2017-06-28', 0.0, 77.0, 'USC00519281'),
-     ('2017-06-29', 0.0, 76.0, 'USC00519281'),
-     ('2017-06-30', 0.01, 76.0, 'USC00519281'),
-     ('2017-07-01', 0.08, 79.0, 'USC00519281'),
-     ('2017-07-02', 0.15, 81.0, 'USC00519281'),
-     ('2017-07-03', 0.15, 76.0, 'USC00519281'),
-     ('2017-07-04', 0.08, 78.0, 'USC00519281'),
-     ('2017-07-05', 0.0, 77.0, 'USC00519281'),
-     ('2017-07-06', 0.0, 74.0, 'USC00519281'),
-     ('2017-07-07', 0.18, 75.0, 'USC00519281'),
-     ('2017-07-08', 0.0, 78.0, 'USC00519281'),
-     ('2017-07-09', 0.11, 78.0, 'USC00519281'),
-     ('2017-07-10', 0.02, 69.0, 'USC00519281'),
-     ('2017-07-11', 0.02, 72.0, 'USC00519281'),
-     ('2017-07-12', 0.28, 74.0, 'USC00519281'),
-     ('2017-07-13', 0.32, 74.0, 'USC00519281'),
-     ('2017-07-14', 0.2, 76.0, 'USC00519281'),
-     ('2017-07-15', 0.05, 80.0, 'USC00519281'),
-     ('2017-07-16', 0.1, 80.0, 'USC00519281'),
-     ('2017-07-17', 0.21, 76.0, 'USC00519281'),
-     ('2017-07-18', 0.05, 76.0, 'USC00519281'),
-     ('2017-07-19', 0.05, 76.0, 'USC00519281'),
-     ('2017-07-20', 0.06, 77.0, 'USC00519281'),
-     ('2017-07-21', 0.03, 77.0, 'USC00519281'),
-     ('2017-07-22', 0.2, 77.0, 'USC00519281'),
-     ('2017-07-23', 0.2, 82.0, 'USC00519281'),
-     ('2017-07-24', 0.61, 75.0, 'USC00519281'),
-     ('2017-07-25', 0.11, 77.0, 'USC00519281'),
-     ('2017-07-26', 0.12, 75.0, 'USC00519281'),
-     ('2017-07-27', 0.01, 76.0, 'USC00519281'),
-     ('2017-07-28', 0.09, 81.0, 'USC00519281'),
-     ('2017-07-29', 0.23, 82.0, 'USC00519281'),
-     ('2017-07-30', 0.0, 81.0, 'USC00519281'),
-     ('2017-07-31', 0.0, 76.0, 'USC00519281'),
-     ('2017-08-04', 0.0, 77.0, 'USC00519281'),
-     ('2017-08-05', 0.06, 82.0, 'USC00519281'),
-     ('2017-08-06', 0.0, 83.0, 'USC00519281'),
-     ('2017-08-13', 0.0, 77.0, 'USC00519281'),
-     ('2017-08-14', 0.0, 77.0, 'USC00519281'),
-     ('2017-08-15', 0.32, 77.0, 'USC00519281'),
-     ('2017-08-16', 0.12, 76.0, 'USC00519281'),
-     ('2017-08-17', 0.01, 76.0, 'USC00519281'),
-     ('2017-08-18', 0.06, 79.0, 'USC00519281')]
+    [('2016-08-24', 77.0),
+     ('2016-08-25', 80.0),
+     ('2016-08-26', 80.0),
+     ('2016-08-27', 75.0),
+     ('2016-08-28', 73.0),
+     ('2016-08-29', 78.0),
+     ('2016-08-30', 77.0),
+     ('2016-08-31', 78.0),
+     ('2016-09-01', 80.0),
+     ('2016-09-02', 80.0),
+     ('2016-09-03', 78.0),
+     ('2016-09-04', 78.0),
+     ('2016-09-05', 78.0),
+     ('2016-09-06', 73.0),
+     ('2016-09-07', 74.0),
+     ('2016-09-08', 80.0),
+     ('2016-09-09', 79.0),
+     ('2016-09-10', 77.0),
+     ('2016-09-11', 80.0),
+     ('2016-09-12', 76.0),
+     ('2016-09-13', 79.0),
+     ('2016-09-14', 75.0),
+     ('2016-09-15', 79.0),
+     ('2016-09-16', 78.0),
+     ('2016-09-17', 79.0),
+     ('2016-09-18', 78.0),
+     ('2016-09-19', 78.0),
+     ('2016-09-20', 76.0),
+     ('2016-09-21', 74.0),
+     ('2016-09-22', 77.0),
+     ('2016-09-23', 78.0),
+     ('2016-09-24', 79.0),
+     ('2016-09-25', 79.0),
+     ('2016-09-26', 77.0),
+     ('2016-09-27', 80.0),
+     ('2016-09-28', 78.0),
+     ('2016-09-29', 78.0),
+     ('2016-09-30', 78.0),
+     ('2016-10-01', 77.0),
+     ('2016-10-02', 79.0),
+     ('2016-10-03', 79.0),
+     ('2016-10-04', 79.0),
+     ('2016-10-05', 79.0),
+     ('2016-10-06', 75.0),
+     ('2016-10-07', 76.0),
+     ('2016-10-08', 73.0),
+     ('2016-10-09', 72.0),
+     ('2016-10-10', 71.0),
+     ('2016-10-11', 77.0),
+     ('2016-10-12', 79.0),
+     ('2016-10-13', 78.0),
+     ('2016-10-14', 79.0),
+     ('2016-10-15', 77.0),
+     ('2016-10-16', 79.0),
+     ('2016-10-17', 77.0),
+     ('2016-10-18', 78.0),
+     ('2016-10-19', 78.0),
+     ('2016-10-20', 78.0),
+     ('2016-10-21', 78.0),
+     ('2016-10-22', 77.0),
+     ('2016-10-23', 74.0),
+     ('2016-10-24', 75.0),
+     ('2016-10-25', 76.0),
+     ('2016-10-26', 73.0),
+     ('2016-10-27', 76.0),
+     ('2016-10-28', 74.0),
+     ('2016-10-29', 77.0),
+     ('2016-10-30', 76.0),
+     ('2016-10-31', 76.0),
+     ('2016-11-01', 74.0),
+     ('2016-11-02', 75.0),
+     ('2016-11-03', 75.0),
+     ('2016-11-04', 75.0),
+     ('2016-11-05', 75.0),
+     ('2016-11-06', 71.0),
+     ('2016-11-07', 63.0),
+     ('2016-11-08', 70.0),
+     ('2016-11-09', 68.0),
+     ('2016-11-10', 67.0),
+     ('2016-11-11', 77.0),
+     ('2016-11-12', 74.0),
+     ('2016-11-13', 77.0),
+     ('2016-11-14', 76.0),
+     ('2016-11-15', 76.0),
+     ('2016-11-16', 75.0),
+     ('2016-11-17', 76.0),
+     ('2016-11-18', 75.0),
+     ('2016-11-19', 73.0),
+     ('2016-11-20', 75.0),
+     ('2016-11-21', 73.0),
+     ('2016-11-22', 75.0),
+     ('2016-11-23', 74.0),
+     ('2016-11-24', 75.0),
+     ('2016-11-25', 74.0),
+     ('2016-11-26', 75.0),
+     ('2016-11-27', 73.0),
+     ('2016-11-28', 75.0),
+     ('2016-11-29', 73.0),
+     ('2016-11-30', 73.0),
+     ('2016-12-01', 74.0),
+     ('2016-12-02', 70.0),
+     ('2016-12-03', 72.0),
+     ('2016-12-04', 70.0),
+     ('2016-12-05', 67.0),
+     ('2016-12-06', 67.0),
+     ('2016-12-07', 69.0),
+     ('2016-12-08', 70.0),
+     ('2016-12-09', 68.0),
+     ('2016-12-10', 69.0),
+     ('2016-12-11', 69.0),
+     ('2016-12-12', 66.0),
+     ('2016-12-13', 65.0),
+     ('2016-12-14', 68.0),
+     ('2016-12-15', 62.0),
+     ('2016-12-16', 75.0),
+     ('2016-12-17', 70.0),
+     ('2016-12-18', 69.0),
+     ('2016-12-19', 76.0),
+     ('2016-12-20', 76.0),
+     ('2016-12-21', 74.0),
+     ('2016-12-22', 73.0),
+     ('2016-12-23', 71.0),
+     ('2016-12-24', 74.0),
+     ('2016-12-25', 74.0),
+     ('2016-12-26', 72.0),
+     ('2016-12-27', 71.0),
+     ('2016-12-28', 72.0),
+     ('2016-12-29', 74.0),
+     ('2016-12-30', 69.0),
+     ('2016-12-31', 67.0),
+     ('2017-01-01', 72.0),
+     ('2017-01-02', 70.0),
+     ('2017-01-03', 64.0),
+     ('2017-01-04', 63.0),
+     ('2017-01-05', 63.0),
+     ('2017-01-06', 62.0),
+     ('2017-01-07', 70.0),
+     ('2017-01-08', 70.0),
+     ('2017-01-09', 62.0),
+     ('2017-01-10', 62.0),
+     ('2017-01-11', 63.0),
+     ('2017-01-12', 65.0),
+     ('2017-01-13', 69.0),
+     ('2017-01-14', 77.0),
+     ('2017-01-15', 70.0),
+     ('2017-01-16', 74.0),
+     ('2017-01-17', 69.0),
+     ('2017-01-18', 72.0),
+     ('2017-01-19', 71.0),
+     ('2017-01-20', 69.0),
+     ('2017-01-21', 71.0),
+     ('2017-01-22', 71.0),
+     ('2017-01-23', 72.0),
+     ('2017-01-24', 72.0),
+     ('2017-01-25', 69.0),
+     ('2017-01-26', 70.0),
+     ('2017-01-27', 66.0),
+     ('2017-01-28', 65.0),
+     ('2017-01-29', 69.0),
+     ('2017-01-30', 68.0),
+     ('2017-01-31', 68.0),
+     ('2017-02-01', 68.0),
+     ('2017-02-02', 59.0),
+     ('2017-02-03', 60.0),
+     ('2017-02-04', 70.0),
+     ('2017-02-05', 73.0),
+     ('2017-02-06', 75.0),
+     ('2017-02-07', 64.0),
+     ('2017-02-08', 59.0),
+     ('2017-02-09', 59.0),
+     ('2017-02-10', 62.0),
+     ('2017-02-11', 68.0),
+     ('2017-02-12', 70.0),
+     ('2017-02-13', 73.0),
+     ('2017-02-14', 79.0),
+     ('2017-02-15', 75.0),
+     ('2017-02-16', 65.0),
+     ('2017-02-17', 70.0),
+     ('2017-02-18', 74.0),
+     ('2017-02-19', 70.0),
+     ('2017-02-20', 70.0),
+     ('2017-02-21', 71.0),
+     ('2017-02-22', 71.0),
+     ('2017-02-23', 71.0),
+     ('2017-02-24', 69.0),
+     ('2017-02-25', 61.0),
+     ('2017-02-26', 67.0),
+     ('2017-02-27', 65.0),
+     ('2017-02-28', 72.0),
+     ('2017-03-01', 71.0),
+     ('2017-03-02', 73.0),
+     ('2017-03-03', 72.0),
+     ('2017-03-04', 77.0),
+     ('2017-03-05', 73.0),
+     ('2017-03-06', 67.0),
+     ('2017-03-07', 62.0),
+     ('2017-03-08', 64.0),
+     ('2017-03-09', 67.0),
+     ('2017-03-10', 66.0),
+     ('2017-03-11', 81.0),
+     ('2017-03-12', 69.0),
+     ('2017-03-13', 66.0),
+     ('2017-03-14', 67.0),
+     ('2017-03-15', 69.0),
+     ('2017-03-16', 66.0),
+     ('2017-03-17', 68.0),
+     ('2017-03-18', 65.0),
+     ('2017-03-19', 74.0),
+     ('2017-03-20', 69.0),
+     ('2017-03-21', 72.0),
+     ('2017-03-22', 73.0),
+     ('2017-03-23', 72.0),
+     ('2017-03-24', 71.0),
+     ('2017-03-25', 76.0),
+     ('2017-03-26', 77.0),
+     ('2017-03-27', 76.0),
+     ('2017-03-28', 74.0),
+     ('2017-03-29', 68.0),
+     ('2017-03-30', 73.0),
+     ('2017-03-31', 71.0),
+     ('2017-04-01', 74.0),
+     ('2017-04-02', 75.0),
+     ('2017-04-03', 70.0),
+     ('2017-04-04', 67.0),
+     ('2017-04-05', 71.0),
+     ('2017-04-06', 67.0),
+     ('2017-04-07', 74.0),
+     ('2017-04-08', 77.0),
+     ('2017-04-09', 78.0),
+     ('2017-04-10', 67.0),
+     ('2017-04-11', 70.0),
+     ('2017-04-12', 69.0),
+     ('2017-04-13', 69.0),
+     ('2017-04-14', 74.0),
+     ('2017-04-15', 78.0),
+     ('2017-04-16', 71.0),
+     ('2017-04-17', 67.0),
+     ('2017-04-18', 68.0),
+     ('2017-04-19', 67.0),
+     ('2017-04-20', 76.0),
+     ('2017-04-21', 69.0),
+     ('2017-04-22', 72.0),
+     ('2017-04-23', 76.0),
+     ('2017-04-24', 68.0),
+     ('2017-04-25', 72.0),
+     ('2017-04-26', 74.0),
+     ('2017-04-27', 70.0),
+     ('2017-04-28', 67.0),
+     ('2017-04-29', 72.0),
+     ('2017-04-30', 60.0),
+     ('2017-05-01', 65.0),
+     ('2017-05-02', 75.0),
+     ('2017-05-03', 70.0),
+     ('2017-05-04', 75.0),
+     ('2017-05-05', 70.0),
+     ('2017-05-06', 79.0),
+     ('2017-05-07', 75.0),
+     ('2017-05-08', 70.0),
+     ('2017-05-09', 67.0),
+     ('2017-05-10', 74.0),
+     ('2017-05-11', 70.0),
+     ('2017-05-12', 75.0),
+     ('2017-05-13', 76.0),
+     ('2017-05-14', 77.0),
+     ('2017-05-15', 74.0),
+     ('2017-05-16', 74.0),
+     ('2017-05-17', 74.0),
+     ('2017-05-18', 69.0),
+     ('2017-05-19', 68.0),
+     ('2017-05-20', 76.0),
+     ('2017-05-21', 74.0),
+     ('2017-05-22', 71.0),
+     ('2017-05-23', 71.0),
+     ('2017-05-24', 74.0),
+     ('2017-05-25', 74.0),
+     ('2017-05-26', 74.0),
+     ('2017-05-27', 74.0),
+     ('2017-05-28', 80.0),
+     ('2017-05-29', 74.0),
+     ('2017-05-30', 72.0),
+     ('2017-05-31', 75.0),
+     ('2017-06-01', 80.0),
+     ('2017-06-02', 76.0),
+     ('2017-06-03', 76.0),
+     ('2017-06-04', 77.0),
+     ('2017-06-05', 75.0),
+     ('2017-06-06', 75.0),
+     ('2017-06-07', 75.0),
+     ('2017-06-08', 75.0),
+     ('2017-06-09', 72.0),
+     ('2017-06-10', 74.0),
+     ('2017-06-11', 74.0),
+     ('2017-06-12', 74.0),
+     ('2017-06-13', 76.0),
+     ('2017-06-14', 74.0),
+     ('2017-06-15', 75.0),
+     ('2017-06-16', 73.0),
+     ('2017-06-17', 79.0),
+     ('2017-06-18', 75.0),
+     ('2017-06-19', 72.0),
+     ('2017-06-20', 72.0),
+     ('2017-06-21', 74.0),
+     ('2017-06-22', 72.0),
+     ('2017-06-23', 72.0),
+     ('2017-06-24', 77.0),
+     ('2017-06-25', 71.0),
+     ('2017-06-26', 73.0),
+     ('2017-06-27', 76.0),
+     ('2017-06-28', 77.0),
+     ('2017-06-29', 76.0),
+     ('2017-06-30', 76.0),
+     ('2017-07-01', 79.0),
+     ('2017-07-02', 81.0),
+     ('2017-07-03', 76.0),
+     ('2017-07-04', 78.0),
+     ('2017-07-05', 77.0),
+     ('2017-07-06', 74.0),
+     ('2017-07-07', 75.0),
+     ('2017-07-08', 78.0),
+     ('2017-07-09', 78.0),
+     ('2017-07-10', 69.0),
+     ('2017-07-11', 72.0),
+     ('2017-07-12', 74.0),
+     ('2017-07-13', 74.0),
+     ('2017-07-14', 76.0),
+     ('2017-07-15', 80.0),
+     ('2017-07-16', 80.0),
+     ('2017-07-17', 76.0),
+     ('2017-07-18', 76.0),
+     ('2017-07-19', 76.0),
+     ('2017-07-20', 77.0),
+     ('2017-07-21', 77.0),
+     ('2017-07-22', 77.0),
+     ('2017-07-23', 82.0),
+     ('2017-07-24', 75.0),
+     ('2017-07-25', 77.0),
+     ('2017-07-26', 75.0),
+     ('2017-07-27', 76.0),
+     ('2017-07-28', 81.0),
+     ('2017-07-29', 82.0),
+     ('2017-07-30', 81.0),
+     ('2017-07-31', 76.0),
+     ('2017-08-04', 77.0),
+     ('2017-08-05', 82.0),
+     ('2017-08-06', 83.0),
+     ('2017-08-13', 77.0),
+     ('2017-08-14', 77.0),
+     ('2017-08-15', 77.0),
+     ('2017-08-16', 76.0),
+     ('2017-08-17', 76.0),
+     ('2017-08-18', 79.0)]
 
 
 
 
 ```python
-# highest_tobs_station_yearly[0:3]
-
-temp_list = []
-Frequency = []
-row_count = 0
-
-for row in highest_tobs_station_yearly:
-    row_count= row_count + 1     
-    temp_list.append(temp_list)
-    
-
-print(str(len(temp_list)))
+temp_df = pd.DataFrame(highest_tobs_station_yearly)
+temp_df.head()
 ```
 
+
+
+
+<div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>tobs</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>2016-08-24</td>
+      <td>77.0</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>2016-08-25</td>
+      <td>80.0</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>2016-08-26</td>
+      <td>80.0</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>2016-08-27</td>
+      <td>75.0</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>2016-08-28</td>
+      <td>73.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+temp_df.plot.hist(by='tobs', bins=12)
+plt.show()
+```
+
+
+    <IPython.core.display.Javascript object>
+
+
+
+<img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAoAAAAHgCAYAAAA10dzkAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAC1lSURBVHhe7d0JmGRlfS/+mhkZR2BakGVAMmhGIBrBuEYF3G6UuMaIJorXiCBuQaMXuQpGQTEGl7jrVVREH/US9eKKuKBBBeOC69+/IC6jOBdkJCjOsIyjM9zft/qUFEX3bN1dXTXn83me71PnvHVmoc9U8+v3Pe/7dgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABoowXN69i64YYbFq1du3b/5rRrwYIFv672G5pTAIB5V/XJgipPbtOcdi1duvTH1byhOR2asS8A16xZc8eNGzde3JwCAIyNhQsX3mliYuKHzenQLGxeAQBoCQUgAEDLKAABAFpm7AvATPhoDsfWunXrOitXruy+Mprco/HgPo0+92j0uUfDNV91zNgXgNvLbN8NG4Y+AYit5B6NB/dp9LlHo889Gp75qmMMAQMAtIwCEACgZRSAAAAtowAEAGgZBSAAQMtsD1vB7bFx48ZfNadjKVPtV61a1Vm+fHlnyZIlTSujxD0aD+7T6HOPtkz9f61z7bXXzstSLPmz8+fm/ixcqJ9oS+XrtdNOO23116yu33NiYuLK5nRoFIAjwDfE0ecejQf3afS5R5uXAuyqq67q7Lzzzt2v0YIFw/1fdf789evXdxYvXqwA3EJZySX/tq+55prObrvttlVft/kqAN1ZABgh6flL8XerW91q6MUf2yb3Kfcr9y33bxwoAAFghKQnSe/oeMp9y/0bBwpAABgxev7G0zjdNwUgAEDLKAABAFpGAQgA0DIKQABgu/SsZz2rs8suu3QuvfTSpoUe6wCOAOtijT73aDy4T6Mv92ivM69qzkbb1Uft0xwN15VXXtnZY489mrOb2+WMy5qj0TMbX7Pzzz+/86hHParzwhe+sHPiiSc2rdsmBeCZZ57Z+d73vte53e1u17TOrc3dv0HWAQQAYCgUgAAALaMABABGwqmnntod/o1XvepV3ef3euk9x/frX/+6OzR8l7vcpbPnnnt29ttvv85RRx3V+eEPf9h9fyrZ3u51r3td5253u1tn2bJlnbvf/e6dN73pTd32QR//+Mc7D3/4w7u/b669853v3HnsYx/bOfvss5srtg8KQABgJBx66KGdI444ont8yCGHdJ8D7OXWt751t/h78IMf3Hnb297W2XfffTvHHnts5wEPeEDnk5/8ZOev/uqvOt/4xje6v3bQCSec0HnrW9/aveaYY47p/OEPf+icdNJJneOOO665YtLpp5/eOfLIIzsrV67sPPKRj/zj73/ZZZd1PvWpTzVXbR9MAhkBHlwffe7ReHCfRp9JIJtnEsj0k0Ce/exnd97//vd3C7cUcD1f+MIXur10d7jDHToXXnhhJlZ023uTQNJT+KUvfamz9957d9uvueaazmGHHda56KKLOuecc07n4IMP7ran2Lv44ou77bvvvnu3rSfF521uc5vmbHomgQAAzJL169d3zjrrrG4Rdvzxxzetk9Kzl/z0pz/tfP3rX29ab/SMZzzjj8Vf7Lzzzt0CM1Ig9tthhx06t7jFLZqzG21J8TdOFIAAwMj70Y9+1Ln++us797jHPTo77rhj03qjDB/H97///e5rv/ve977N0Y16bf3XP+Yxj+lce+213R7BF7/4xZ3PfOYznauvvrp5d/uiAAQARt7atWu7r9MNr2aYN9asWdN97TfVr0lbhor7r3/uc5/bnRyS3yvPDD7hCU/oTgbJc4k///nPm6u2DwpAAGDkLV26tPuaZ+ym0mvvXddvql+TtswCnpiYaFo6nQULFnSe/OQnd774xS92h5PzvGGeR/z0pz/defzjH9/ZsGFDc+X4UwACACNj0aJF3dfBYuuAAw7oTu769re/3bnuuuua1ht95Stf6b4edNBB3dd+X/3qV5ujG/Xapro+8sxfZgKfccYZnfvf//6dSy65pDs7eHuhAAQARsauu+7afb388su7rz2LFy/uzvS96qqrumv69UuP3bnnnttZsWJF5z73uU/TeqPTTjut88tf/rI5m5wFnHUGI8O8PZlNnCVi+v3+97/v/OY3v+keb0+rC1gGZgRYumL0uUfjwX0afZaB2bzNLSOyvS8Dk56/Aw88sFt0PelJT+rc9ra37Q7NHn300d1iLOsA5nm89Mrd85737PziF7/oLt6c2buZJdw/4aO3DMxf//Vf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" width="640">
+
+
+
+```python
+# tobs_graph = session.query(Measurement.date, Measurement.tobs).\
+#     filter(Measurement.date >'2016-08-23').\
+#     filter(Measurement.station==station_max).\
+#     order_by(Measurement.date).all()
+# tobs_graph
+```
+
+
+
+
+    [('2016-08-24', 77.0),
+     ('2016-08-25', 80.0),
+     ('2016-08-26', 80.0),
+     ('2016-08-27', 75.0),
+     ('2016-08-28', 73.0),
+     ('2016-08-29', 78.0),
+     ('2016-08-30', 77.0),
+     ('2016-08-31', 78.0),
+     ('2016-09-01', 80.0),
+     ('2016-09-02', 80.0),
+     ('2016-09-03', 78.0),
+     ('2016-09-04', 78.0),
+     ('2016-09-05', 78.0),
+     ('2016-09-06', 73.0),
+     ('2016-09-07', 74.0),
+     ('2016-09-08', 80.0),
+     ('2016-09-09', 79.0),
+     ('2016-09-10', 77.0),
+     ('2016-09-11', 80.0),
+     ('2016-09-12', 76.0),
+     ('2016-09-13', 79.0),
+     ('2016-09-14', 75.0),
+     ('2016-09-15', 79.0),
+     ('2016-09-16', 78.0),
+     ('2016-09-17', 79.0),
+     ('2016-09-18', 78.0),
+     ('2016-09-19', 78.0),
+     ('2016-09-20', 76.0),
+     ('2016-09-21', 74.0),
+     ('2016-09-22', 77.0),
+     ('2016-09-23', 78.0),
+     ('2016-09-24', 79.0),
+     ('2016-09-25', 79.0),
+     ('2016-09-26', 77.0),
+     ('2016-09-27', 80.0),
+     ('2016-09-28', 78.0),
+     ('2016-09-29', 78.0),
+     ('2016-09-30', 78.0),
+     ('2016-10-01', 77.0),
+     ('2016-10-02', 79.0),
+     ('2016-10-03', 79.0),
+     ('2016-10-04', 79.0),
+     ('2016-10-05', 79.0),
+     ('2016-10-06', 75.0),
+     ('2016-10-07', 76.0),
+     ('2016-10-08', 73.0),
+     ('2016-10-09', 72.0),
+     ('2016-10-10', 71.0),
+     ('2016-10-11', 77.0),
+     ('2016-10-12', 79.0),
+     ('2016-10-13', 78.0),
+     ('2016-10-14', 79.0),
+     ('2016-10-15', 77.0),
+     ('2016-10-16', 79.0),
+     ('2016-10-17', 77.0),
+     ('2016-10-18', 78.0),
+     ('2016-10-19', 78.0),
+     ('2016-10-20', 78.0),
+     ('2016-10-21', 78.0),
+     ('2016-10-22', 77.0),
+     ('2016-10-23', 74.0),
+     ('2016-10-24', 75.0),
+     ('2016-10-25', 76.0),
+     ('2016-10-26', 73.0),
+     ('2016-10-27', 76.0),
+     ('2016-10-28', 74.0),
+     ('2016-10-29', 77.0),
+     ('2016-10-30', 76.0),
+     ('2016-10-31', 76.0),
+     ('2016-11-01', 74.0),
+     ('2016-11-02', 75.0),
+     ('2016-11-03', 75.0),
+     ('2016-11-04', 75.0),
+     ('2016-11-05', 75.0),
+     ('2016-11-06', 71.0),
+     ('2016-11-07', 63.0),
+     ('2016-11-08', 70.0),
+     ('2016-11-09', 68.0),
+     ('2016-11-10', 67.0),
+     ('2016-11-11', 77.0),
+     ('2016-11-12', 74.0),
+     ('2016-11-13', 77.0),
+     ('2016-11-14', 76.0),
+     ('2016-11-15', 76.0),
+     ('2016-11-16', 75.0),
+     ('2016-11-17', 76.0),
+     ('2016-11-18', 75.0),
+     ('2016-11-19', 73.0),
+     ('2016-11-20', 75.0),
+     ('2016-11-21', 73.0),
+     ('2016-11-22', 75.0),
+     ('2016-11-23', 74.0),
+     ('2016-11-24', 75.0),
+     ('2016-11-25', 74.0),
+     ('2016-11-26', 75.0),
+     ('2016-11-27', 73.0),
+     ('2016-11-28', 75.0),
+     ('2016-11-29', 73.0),
+     ('2016-11-30', 73.0),
+     ('2016-12-01', 74.0),
+     ('2016-12-02', 70.0),
+     ('2016-12-03', 72.0),
+     ('2016-12-04', 70.0),
+     ('2016-12-05', 67.0),
+     ('2016-12-06', 67.0),
+     ('2016-12-07', 69.0),
+     ('2016-12-08', 70.0),
+     ('2016-12-09', 68.0),
+     ('2016-12-10', 69.0),
+     ('2016-12-11', 69.0),
+     ('2016-12-12', 66.0),
+     ('2016-12-13', 65.0),
+     ('2016-12-14', 68.0),
+     ('2016-12-15', 62.0),
+     ('2016-12-16', 75.0),
+     ('2016-12-17', 70.0),
+     ('2016-12-18', 69.0),
+     ('2016-12-19', 76.0),
+     ('2016-12-20', 76.0),
+     ('2016-12-21', 74.0),
+     ('2016-12-22', 73.0),
+     ('2016-12-23', 71.0),
+     ('2016-12-24', 74.0),
+     ('2016-12-25', 74.0),
+     ('2016-12-26', 72.0),
+     ('2016-12-27', 71.0),
+     ('2016-12-28', 72.0),
+     ('2016-12-29', 74.0),
+     ('2016-12-30', 69.0),
+     ('2016-12-31', 67.0),
+     ('2017-01-01', 72.0),
+     ('2017-01-02', 70.0),
+     ('2017-01-03', 64.0),
+     ('2017-01-04', 63.0),
+     ('2017-01-05', 63.0),
+     ('2017-01-06', 62.0),
+     ('2017-01-07', 70.0),
+     ('2017-01-08', 70.0),
+     ('2017-01-09', 62.0),
+     ('2017-01-10', 62.0),
+     ('2017-01-11', 63.0),
+     ('2017-01-12', 65.0),
+     ('2017-01-13', 69.0),
+     ('2017-01-14', 77.0),
+     ('2017-01-15', 70.0),
+     ('2017-01-16', 74.0),
+     ('2017-01-17', 69.0),
+     ('2017-01-18', 72.0),
+     ('2017-01-19', 71.0),
+     ('2017-01-20', 69.0),
+     ('2017-01-21', 71.0),
+     ('2017-01-22', 71.0),
+     ('2017-01-23', 72.0),
+     ('2017-01-24', 72.0),
+     ('2017-01-25', 69.0),
+     ('2017-01-26', 70.0),
+     ('2017-01-27', 66.0),
+     ('2017-01-28', 65.0),
+     ('2017-01-29', 69.0),
+     ('2017-01-30', 68.0),
+     ('2017-01-31', 68.0),
+     ('2017-02-01', 68.0),
+     ('2017-02-02', 59.0),
+     ('2017-02-03', 60.0),
+     ('2017-02-04', 70.0),
+     ('2017-02-05', 73.0),
+     ('2017-02-06', 75.0),
+     ('2017-02-07', 64.0),
+     ('2017-02-08', 59.0),
+     ('2017-02-09', 59.0),
+     ('2017-02-10', 62.0),
+     ('2017-02-11', 68.0),
+     ('2017-02-12', 70.0),
+     ('2017-02-13', 73.0),
+     ('2017-02-14', 79.0),
+     ('2017-02-15', 75.0),
+     ('2017-02-16', 65.0),
+     ('2017-02-17', 70.0),
+     ('2017-02-18', 74.0),
+     ('2017-02-19', 70.0),
+     ('2017-02-20', 70.0),
+     ('2017-02-21', 71.0),
+     ('2017-02-22', 71.0),
+     ('2017-02-23', 71.0),
+     ('2017-02-24', 69.0),
+     ('2017-02-25', 61.0),
+     ('2017-02-26', 67.0),
+     ('2017-02-27', 65.0),
+     ('2017-02-28', 72.0),
+     ('2017-03-01', 71.0),
+     ('2017-03-02', 73.0),
+     ('2017-03-03', 72.0),
+     ('2017-03-04', 77.0),
+     ('2017-03-05', 73.0),
+     ('2017-03-06', 67.0),
+     ('2017-03-07', 62.0),
+     ('2017-03-08', 64.0),
+     ('2017-03-09', 67.0),
+     ('2017-03-10', 66.0),
+     ('2017-03-11', 81.0),
+     ('2017-03-12', 69.0),
+     ('2017-03-13', 66.0),
+     ('2017-03-14', 67.0),
+     ('2017-03-15', 69.0),
+     ('2017-03-16', 66.0),
+     ('2017-03-17', 68.0),
+     ('2017-03-18', 65.0),
+     ('2017-03-19', 74.0),
+     ('2017-03-20', 69.0),
+     ('2017-03-21', 72.0),
+     ('2017-03-22', 73.0),
+     ('2017-03-23', 72.0),
+     ('2017-03-24', 71.0),
+     ('2017-03-25', 76.0),
+     ('2017-03-26', 77.0),
+     ('2017-03-27', 76.0),
+     ('2017-03-28', 74.0),
+     ('2017-03-29', 68.0),
+     ('2017-03-30', 73.0),
+     ('2017-03-31', 71.0),
+     ('2017-04-01', 74.0),
+     ('2017-04-02', 75.0),
+     ('2017-04-03', 70.0),
+     ('2017-04-04', 67.0),
+     ('2017-04-05', 71.0),
+     ('2017-04-06', 67.0),
+     ('2017-04-07', 74.0),
+     ('2017-04-08', 77.0),
+     ('2017-04-09', 78.0),
+     ('2017-04-10', 67.0),
+     ('2017-04-11', 70.0),
+     ('2017-04-12', 69.0),
+     ('2017-04-13', 69.0),
+     ('2017-04-14', 74.0),
+     ('2017-04-15', 78.0),
+     ('2017-04-16', 71.0),
+     ('2017-04-17', 67.0),
+     ('2017-04-18', 68.0),
+     ('2017-04-19', 67.0),
+     ('2017-04-20', 76.0),
+     ('2017-04-21', 69.0),
+     ('2017-04-22', 72.0),
+     ('2017-04-23', 76.0),
+     ('2017-04-24', 68.0),
+     ('2017-04-25', 72.0),
+     ('2017-04-26', 74.0),
+     ('2017-04-27', 70.0),
+     ('2017-04-28', 67.0),
+     ('2017-04-29', 72.0),
+     ('2017-04-30', 60.0),
+     ('2017-05-01', 65.0),
+     ('2017-05-02', 75.0),
+     ('2017-05-03', 70.0),
+     ('2017-05-04', 75.0),
+     ('2017-05-05', 70.0),
+     ('2017-05-06', 79.0),
+     ('2017-05-07', 75.0),
+     ('2017-05-08', 70.0),
+     ('2017-05-09', 67.0),
+     ('2017-05-10', 74.0),
+     ('2017-05-11', 70.0),
+     ('2017-05-12', 75.0),
+     ('2017-05-13', 76.0),
+     ('2017-05-14', 77.0),
+     ('2017-05-15', 74.0),
+     ('2017-05-16', 74.0),
+     ('2017-05-17', 74.0),
+     ('2017-05-18', 69.0),
+     ('2017-05-19', 68.0),
+     ('2017-05-20', 76.0),
+     ('2017-05-21', 74.0),
+     ('2017-05-22', 71.0),
+     ('2017-05-23', 71.0),
+     ('2017-05-24', 74.0),
+     ('2017-05-25', 74.0),
+     ('2017-05-26', 74.0),
+     ('2017-05-27', 74.0),
+     ('2017-05-28', 80.0),
+     ('2017-05-29', 74.0),
+     ('2017-05-30', 72.0),
+     ('2017-05-31', 75.0),
+     ('2017-06-01', 80.0),
+     ('2017-06-02', 76.0),
+     ('2017-06-03', 76.0),
+     ('2017-06-04', 77.0),
+     ('2017-06-05', 75.0),
+     ('2017-06-06', 75.0),
+     ('2017-06-07', 75.0),
+     ('2017-06-08', 75.0),
+     ('2017-06-09', 72.0),
+     ('2017-06-10', 74.0),
+     ('2017-06-11', 74.0),
+     ('2017-06-12', 74.0),
+     ('2017-06-13', 76.0),
+     ('2017-06-14', 74.0),
+     ('2017-06-15', 75.0),
+     ('2017-06-16', 73.0),
+     ('2017-06-17', 79.0),
+     ('2017-06-18', 75.0),
+     ('2017-06-19', 72.0),
+     ('2017-06-20', 72.0),
+     ('2017-06-21', 74.0),
+     ('2017-06-22', 72.0),
+     ('2017-06-23', 72.0),
+     ('2017-06-24', 77.0),
+     ('2017-06-25', 71.0),
+     ('2017-06-26', 73.0),
+     ('2017-06-27', 76.0),
+     ('2017-06-28', 77.0),
+     ('2017-06-29', 76.0),
+     ('2017-06-30', 76.0),
+     ('2017-07-01', 79.0),
+     ('2017-07-02', 81.0),
+     ('2017-07-03', 76.0),
+     ('2017-07-04', 78.0),
+     ('2017-07-05', 77.0),
+     ('2017-07-06', 74.0),
+     ('2017-07-07', 75.0),
+     ('2017-07-08', 78.0),
+     ('2017-07-09', 78.0),
+     ('2017-07-10', 69.0),
+     ('2017-07-11', 72.0),
+     ('2017-07-12', 74.0),
+     ('2017-07-13', 74.0),
+     ('2017-07-14', 76.0),
+     ('2017-07-15', 80.0),
+     ('2017-07-16', 80.0),
+     ('2017-07-17', 76.0),
+     ('2017-07-18', 76.0),
+     ('2017-07-19', 76.0),
+     ('2017-07-20', 77.0),
+     ('2017-07-21', 77.0),
+     ('2017-07-22', 77.0),
+     ('2017-07-23', 82.0),
+     ('2017-07-24', 75.0),
+     ('2017-07-25', 77.0),
+     ('2017-07-26', 75.0),
+     ('2017-07-27', 76.0),
+     ('2017-07-28', 81.0),
+     ('2017-07-29', 82.0),
+     ('2017-07-30', 81.0),
+     ('2017-07-31', 76.0),
+     ('2017-08-04', 77.0),
+     ('2017-08-05', 82.0),
+     ('2017-08-06', 83.0),
+     ('2017-08-13', 77.0),
+     ('2017-08-14', 77.0),
+     ('2017-08-15', 77.0),
+     ('2017-08-16', 76.0),
+     ('2017-08-17', 76.0),
+     ('2017-08-18', 79.0)]
+
+
+
+
+```python
+# # highest_tobs_station_yearly[0:3]
+
+# temp_list = []
+# Frequency = []
+# row_count = 0
+
+# for row in highest_tobs_station_yearly:
+#     print(row)
+#     row_count= row_count + 1  
+#     temp_list.append(row_count)
+    
+
+# print(str(len(temp_list)))
+```
+
+    ('2016-08-24', 2.15, 77.0, 'USC00519281')
+    ('2016-08-25', 0.06, 80.0, 'USC00519281')
+    ('2016-08-26', 0.01, 80.0, 'USC00519281')
+    ('2016-08-27', 0.12, 75.0, 'USC00519281')
+    ('2016-08-28', 0.6, 73.0, 'USC00519281')
+    ('2016-08-29', 0.35, 78.0, 'USC00519281')
+    ('2016-08-30', 0.0, 77.0, 'USC00519281')
+    ('2016-08-31', 0.24, 78.0, 'USC00519281')
+    ('2016-09-01', 0.02, 80.0, 'USC00519281')
+    ('2016-09-02', 0.01, 80.0, 'USC00519281')
+    ('2016-09-03', 0.12, 78.0, 'USC00519281')
+    ('2016-09-04', 0.14, 78.0, 'USC00519281')
+    ('2016-09-05', 0.03, 78.0, 'USC00519281')
+    ('2016-09-06', 0.11, 73.0, 'USC00519281')
+    ('2016-09-07', 0.16, 74.0, 'USC00519281')
+    ('2016-09-08', 0.07, 80.0, 'USC00519281')
+    ('2016-09-09', 0.16, 79.0, 'USC00519281')
+    ('2016-09-10', 0.09, 77.0, 'USC00519281')
+    ('2016-09-11', 0.3, 80.0, 'USC00519281')
+    ('2016-09-12', 0.31, 76.0, 'USC00519281')
+    ('2016-09-13', 0.34, 79.0, 'USC00519281')
+    ('2016-09-14', 2.33, 75.0, 'USC00519281')
+    ('2016-09-15', 0.83, 79.0, 'USC00519281')
+    ('2016-09-16', 0.06, 78.0, 'USC00519281')
+    ('2016-09-17', 0.36, 79.0, 'USC00519281')
+    ('2016-09-18', 0.07, 78.0, 'USC00519281')
+    ('2016-09-19', 0.01, 78.0, 'USC00519281')
+    ('2016-09-20', 0.22, 76.0, 'USC00519281')
+    ('2016-09-21', 0.07, 74.0, 'USC00519281')
+    ('2016-09-22', 0.34, 77.0, 'USC00519281')
+    ('2016-09-23', 0.94, 78.0, 'USC00519281')
+    ('2016-09-24', 0.01, 79.0, 'USC00519281')
+    ('2016-09-25', 0.03, 79.0, 'USC00519281')
+    ('2016-09-26', 0.17, 77.0, 'USC00519281')
+    ('2016-09-27', 0.17, 80.0, 'USC00519281')
+    ('2016-09-28', 0.0, 78.0, 'USC00519281')
+    ('2016-09-29', 0.59, 78.0, 'USC00519281')
+    ('2016-09-30', 0.25, 78.0, 'USC00519281')
+    ('2016-10-01', 0.14, 77.0, 'USC00519281')
+    ('2016-10-02', 0.06, 79.0, 'USC00519281')
+    ('2016-10-03', 0.16, 79.0, 'USC00519281')
+    ('2016-10-04', 0.03, 79.0, 'USC00519281')
+    ('2016-10-05', 0.01, 79.0, 'USC00519281')
+    ('2016-10-06', 0.0, 75.0, 'USC00519281')
+    ('2016-10-07', 0.0, 76.0, 'USC00519281')
+    ('2016-10-08', 0.0, 73.0, 'USC00519281')
+    ('2016-10-09', 0.0, 72.0, 'USC00519281')
+    ('2016-10-10', 0.0, 71.0, 'USC00519281')
+    ('2016-10-11', 0.28, 77.0, 'USC00519281')
+    ('2016-10-12', 0.03, 79.0, 'USC00519281')
+    ('2016-10-13', 0.0, 78.0, 'USC00519281')
+    ('2016-10-14', 0.0, 79.0, 'USC00519281')
+    ('2016-10-15', 0.04, 77.0, 'USC00519281')
+    ('2016-10-16', 0.0, 79.0, 'USC00519281')
+    ('2016-10-17', 0.01, 77.0, 'USC00519281')
+    ('2016-10-18', 0.02, 78.0, 'USC00519281')
+    ('2016-10-19', 0.11, 78.0, 'USC00519281')
+    ('2016-10-20', 0.0, 78.0, 'USC00519281')
+    ('2016-10-21', 0.0, 78.0, 'USC00519281')
+    ('2016-10-22', 0.15, 77.0, 'USC00519281')
+    ('2016-10-23', 0.02, 74.0, 'USC00519281')
+    ('2016-10-24', 0.08, 75.0, 'USC00519281')
+    ('2016-10-25', 0.11, 76.0, 'USC00519281')
+    ('2016-10-26', 0.01, 73.0, 'USC00519281')
+    ('2016-10-27', 0.22, 76.0, 'USC00519281')
+    ('2016-10-28', 0.05, 74.0, 'USC00519281')
+    ('2016-10-29', 0.1, 77.0, 'USC00519281')
+    ('2016-10-30', 0.16, 76.0, 'USC00519281')
+    ('2016-10-31', 0.07, 76.0, 'USC00519281')
+    ('2016-11-01', 0.1, 74.0, 'USC00519281')
+    ('2016-11-02', 0.0, 75.0, 'USC00519281')
+    ('2016-11-03', 0.0, 75.0, 'USC00519281')
+    ('2016-11-04', 0.0, 75.0, 'USC00519281')
+    ('2016-11-05', 0.03, 75.0, 'USC00519281')
+    ('2016-11-06', 0.01, 71.0, 'USC00519281')
+    ('2016-11-07', 0.0, 63.0, 'USC00519281')
+    ('2016-11-08', 0.21, 70.0, 'USC00519281')
+    ('2016-11-09', 0.11, 68.0, 'USC00519281')
+    ('2016-11-10', 0.0, 67.0, 'USC00519281')
+    ('2016-11-11', 0.0, 77.0, 'USC00519281')
+    ('2016-11-12', 0.0, 74.0, 'USC00519281')
+    ('2016-11-13', 0.0, 77.0, 'USC00519281')
+    ('2016-11-14', 0.0, 76.0, 'USC00519281')
+    ('2016-11-15', 0.0, 76.0, 'USC00519281')
+    ('2016-11-16', 0.24, 75.0, 'USC00519281')
+    ('2016-11-17', 0.01, 76.0, 'USC00519281')
+    ('2016-11-18', 0.0, 75.0, 'USC00519281')
+    ('2016-11-19', 0.11, 73.0, 'USC00519281')
+    ('2016-11-20', 0.39, 75.0, 'USC00519281')
+    ('2016-11-21', 0.11, 73.0, 'USC00519281')
+    ('2016-11-22', 2.05, 75.0, 'USC00519281')
+    ('2016-11-23', 0.25, 74.0, 'USC00519281')
+    ('2016-11-24', 0.3, 75.0, 'USC00519281')
+    ('2016-11-25', 0.08, 74.0, 'USC00519281')
+    ('2016-11-26', 0.06, 75.0, 'USC00519281')
+    ('2016-11-27', 0.17, 73.0, 'USC00519281')
+    ('2016-11-28', 0.0, 75.0, 'USC00519281')
+    ('2016-11-29', 0.09, 73.0, 'USC00519281')
+    ('2016-11-30', 0.05, 73.0, 'USC00519281')
+    ('2016-12-01', 0.37, 74.0, 'USC00519281')
+    ('2016-12-02', 0.35, 70.0, 'USC00519281')
+    ('2016-12-03', 0.77, 72.0, 'USC00519281')
+    ('2016-12-04', 0.04, 70.0, 'USC00519281')
+    ('2016-12-05', 0.22, 67.0, 'USC00519281')
+    ('2016-12-06', 0.0, 67.0, 'USC00519281')
+    ('2016-12-07', 0.12, 69.0, 'USC00519281')
+    ('2016-12-08', 0.07, 70.0, 'USC00519281')
+    ('2016-12-09', 0.31, 68.0, 'USC00519281')
+    ('2016-12-10', 0.02, 69.0, 'USC00519281')
+    ('2016-12-11', 0.0, 69.0, 'USC00519281')
+    ('2016-12-12', 0.0, 66.0, 'USC00519281')
+    ('2016-12-13', 0.04, 65.0, 'USC00519281')
+    ('2016-12-14', 0.92, 68.0, 'USC00519281')
+    ('2016-12-15', 0.14, 62.0, 'USC00519281')
+    ('2016-12-16', 0.03, 75.0, 'USC00519281')
+    ('2016-12-17', 0.07, 70.0, 'USC00519281')
+    ('2016-12-18', 0.16, 69.0, 'USC00519281')
+    ('2016-12-19', 0.03, 76.0, 'USC00519281')
+    ('2016-12-20', 0.0, 76.0, 'USC00519281')
+    ('2016-12-21', 0.11, 74.0, 'USC00519281')
+    ('2016-12-22', 0.86, 73.0, 'USC00519281')
+    ('2016-12-23', 0.24, 71.0, 'USC00519281')
+    ('2016-12-24', 0.2, 74.0, 'USC00519281')
+    ('2016-12-25', 0.02, 74.0, 'USC00519281')
+    ('2016-12-26', 0.22, 72.0, 'USC00519281')
+    ('2016-12-27', 0.05, 71.0, 'USC00519281')
+    ('2016-12-28', 0.09, 72.0, 'USC00519281')
+    ('2016-12-29', 0.52, 74.0, 'USC00519281')
+    ('2016-12-30', 0.29, 69.0, 'USC00519281')
+    ('2016-12-31', 0.25, 67.0, 'USC00519281')
+    ('2017-01-01', 0.03, 72.0, 'USC00519281')
+    ('2017-01-02', 0.01, 70.0, 'USC00519281')
+    ('2017-01-03', 0.0, 64.0, 'USC00519281')
+    ('2017-01-04', 0.0, 63.0, 'USC00519281')
+    ('2017-01-05', 0.06, 63.0, 'USC00519281')
+    ('2017-01-06', 0.1, 62.0, 'USC00519281')
+    ('2017-01-07', 0.0, 70.0, 'USC00519281')
+    ('2017-01-08', 0.0, 70.0, 'USC00519281')
+    ('2017-01-09', 0.0, 62.0, 'USC00519281')
+    ('2017-01-10', 0.0, 62.0, 'USC00519281')
+    ('2017-01-11', 0.0, 63.0, 'USC00519281')
+    ('2017-01-12', 0.0, 65.0, 'USC00519281')
+    ('2017-01-13', 0.0, 69.0, 'USC00519281')
+    ('2017-01-14', 0.01, 77.0, 'USC00519281')
+    ('2017-01-15', 0.0, 70.0, 'USC00519281')
+    ('2017-01-16', 0.0, 74.0, 'USC00519281')
+    ('2017-01-17', 0.0, 69.0, 'USC00519281')
+    ('2017-01-18', 0.0, 72.0, 'USC00519281')
+    ('2017-01-19', 0.02, 71.0, 'USC00519281')
+    ('2017-01-20', 0.0, 69.0, 'USC00519281')
+    ('2017-01-21', 0.03, 71.0, 'USC00519281')
+    ('2017-01-22', 0.09, 71.0, 'USC00519281')
+    ('2017-01-23', 0.01, 72.0, 'USC00519281')
+    ('2017-01-24', 0.13, 72.0, 'USC00519281')
+    ('2017-01-25', 0.79, 69.0, 'USC00519281')
+    ('2017-01-26', 0.0, 70.0, 'USC00519281')
+    ('2017-01-27', 0.03, 66.0, 'USC00519281')
+    ('2017-01-28', 0.0, 65.0, 'USC00519281')
+    ('2017-01-29', 0.26, 69.0, 'USC00519281')
+    ('2017-01-30', 0.0, 68.0, 'USC00519281')
+    ('2017-01-31', 0.0, 68.0, 'USC00519281')
+    ('2017-02-01', 0.0, 68.0, 'USC00519281')
+    ('2017-02-02', 0.0, 59.0, 'USC00519281')
+    ('2017-02-03', 0.0, 60.0, 'USC00519281')
+    ('2017-02-04', 0.0, 70.0, 'USC00519281')
+    ('2017-02-05', 0.0, 73.0, 'USC00519281')
+    ('2017-02-06', 0.18, 75.0, 'USC00519281')
+    ('2017-02-07', 1.32, 64.0, 'USC00519281')
+    ('2017-02-08', 0.0, 59.0, 'USC00519281')
+    ('2017-02-09', 0.0, 59.0, 'USC00519281')
+    ('2017-02-10', 0.0, 62.0, 'USC00519281')
+    ('2017-02-11', 1.73, 68.0, 'USC00519281')
+    ('2017-02-12', 2.98, 70.0, 'USC00519281')
+    ('2017-02-13', 0.01, 73.0, 'USC00519281')
+    ('2017-02-14', 0.0, 79.0, 'USC00519281')
+    ('2017-02-15', 0.01, 75.0, 'USC00519281')
+    ('2017-02-16', 0.73, 65.0, 'USC00519281')
+    ('2017-02-17', 0.13, 70.0, 'USC00519281')
+    ('2017-02-18', 0.0, 74.0, 'USC00519281')
+    ('2017-02-19', 0.09, 70.0, 'USC00519281')
+    ('2017-02-20', 0.0, 70.0, 'USC00519281')
+    ('2017-02-21', 0.0, 71.0, 'USC00519281')
+    ('2017-02-22', 0.06, 71.0, 'USC00519281')
+    ('2017-02-23', 0.0, 71.0, 'USC00519281')
+    ('2017-02-24', 0.0, 69.0, 'USC00519281')
+    ('2017-02-25', 0.0, 61.0, 'USC00519281')
+    ('2017-02-26', 0.0, 67.0, 'USC00519281')
+    ('2017-02-27', 0.0, 65.0, 'USC00519281')
+    ('2017-02-28', 0.04, 72.0, 'USC00519281')
+    ('2017-03-01', 2.12, 71.0, 'USC00519281')
+    ('2017-03-02', 1.88, 73.0, 'USC00519281')
+    ('2017-03-03', 0.27, 72.0, 'USC00519281')
+    ('2017-03-04', 0.0, 77.0, 'USC00519281')
+    ('2017-03-05', 0.41, 73.0, 'USC00519281')
+    ('2017-03-06', 0.03, 67.0, 'USC00519281')
+    ('2017-03-07', 0.0, 62.0, 'USC00519281')
+    ('2017-03-08', 0.0, 64.0, 'USC00519281')
+    ('2017-03-09', 0.65, 67.0, 'USC00519281')
+    ('2017-03-10', 0.03, 66.0, 'USC00519281')
+    ('2017-03-11', 0.01, 81.0, 'USC00519281')
+    ('2017-03-12', 0.0, 69.0, 'USC00519281')
+    ('2017-03-13', 0.0, 66.0, 'USC00519281')
+    ('2017-03-14', 0.0, 67.0, 'USC00519281')
+    ('2017-03-15', 0.06, 69.0, 'USC00519281')
+    ('2017-03-16', 0.0, 66.0, 'USC00519281')
+    ('2017-03-17', 0.12, 68.0, 'USC00519281')
+    ('2017-03-18', 0.0, 65.0, 'USC00519281')
+    ('2017-03-19', 0.0, 74.0, 'USC00519281')
+    ('2017-03-20', 0.02, 69.0, 'USC00519281')
+    ('2017-03-21', 0.09, 72.0, 'USC00519281')
+    ('2017-03-22', 0.0, 73.0, 'USC00519281')
+    ('2017-03-23', 0.0, 72.0, 'USC00519281')
+    ('2017-03-24', 0.12, 71.0, 'USC00519281')
+    ('2017-03-25', 0.93, 76.0, 'USC00519281')
+    ('2017-03-26', 0.0, 77.0, 'USC00519281')
+    ('2017-03-27', 0.01, 76.0, 'USC00519281')
+    ('2017-03-28', 0.0, 74.0, 'USC00519281')
+    ('2017-03-29', 0.01, 68.0, 'USC00519281')
+    ('2017-03-30', 0.04, 73.0, 'USC00519281')
+    ('2017-03-31', 0.01, 71.0, 'USC00519281')
+    ('2017-04-01', 0.21, 74.0, 'USC00519281')
+    ('2017-04-02', 0.0, 75.0, 'USC00519281')
+    ('2017-04-03', 0.26, 70.0, 'USC00519281')
+    ('2017-04-04', 0.09, 67.0, 'USC00519281')
+    ('2017-04-05', 0.1, 71.0, 'USC00519281')
+    ('2017-04-06', 0.06, 67.0, 'USC00519281')
+    ('2017-04-07', 0.0, 74.0, 'USC00519281')
+    ('2017-04-08', 0.0, 77.0, 'USC00519281')
+    ('2017-04-09', 0.0, 78.0, 'USC00519281')
+    ('2017-04-10', 0.01, 67.0, 'USC00519281')
+    ('2017-04-11', 0.03, 70.0, 'USC00519281')
+    ('2017-04-12', 0.11, 69.0, 'USC00519281')
+    ('2017-04-13', 0.59, 69.0, 'USC00519281')
+    ('2017-04-14', 2.3, 74.0, 'USC00519281')
+    ('2017-04-15', 0.38, 78.0, 'USC00519281')
+    ('2017-04-16', 0.47, 71.0, 'USC00519281')
+    ('2017-04-17', 1.04, 67.0, 'USC00519281')
+    ('2017-04-18', 2.03, 68.0, 'USC00519281')
+    ('2017-04-19', 0.02, 67.0, 'USC00519281')
+    ('2017-04-20', 0.05, 76.0, 'USC00519281')
+    ('2017-04-21', 1.74, 69.0, 'USC00519281')
+    ('2017-04-22', 1.58, 72.0, 'USC00519281')
+    ('2017-04-23', 0.06, 76.0, 'USC00519281')
+    ('2017-04-24', 0.01, 68.0, 'USC00519281')
+    ('2017-04-25', 0.0, 72.0, 'USC00519281')
+    ('2017-04-26', 0.02, 74.0, 'USC00519281')
+    ('2017-04-27', 0.19, 70.0, 'USC00519281')
+    ('2017-04-28', 0.76, 67.0, 'USC00519281')
+    ('2017-04-29', 0.37, 72.0, 'USC00519281')
+    ('2017-04-30', 1.04, 60.0, 'USC00519281')
+    ('2017-05-01', 0.13, 65.0, 'USC00519281')
+    ('2017-05-02', 0.01, 75.0, 'USC00519281')
+    ('2017-05-03', 0.01, 70.0, 'USC00519281')
+    ('2017-05-04', 0.0, 75.0, 'USC00519281')
+    ('2017-05-05', 0.0, 70.0, 'USC00519281')
+    ('2017-05-06', 0.0, 79.0, 'USC00519281')
+    ('2017-05-07', 0.02, 75.0, 'USC00519281')
+    ('2017-05-08', 0.73, 70.0, 'USC00519281')
+    ('2017-05-09', 1.58, 67.0, 'USC00519281')
+    ('2017-05-10', 0.2, 74.0, 'USC00519281')
+    ('2017-05-11', 0.12, 70.0, 'USC00519281')
+    ('2017-05-12', 0.02, 75.0, 'USC00519281')
+    ('2017-05-13', 0.12, 76.0, 'USC00519281')
+    ('2017-05-14', 0.17, 77.0, 'USC00519281')
+    ('2017-05-15', 0.09, 74.0, 'USC00519281')
+    ('2017-05-16', 0.03, 74.0, 'USC00519281')
+    ('2017-05-17', 0.07, 74.0, 'USC00519281')
+    ('2017-05-18', 0.13, 69.0, 'USC00519281')
+    ('2017-05-19', 0.01, 68.0, 'USC00519281')
+    ('2017-05-20', 0.02, 76.0, 'USC00519281')
+    ('2017-05-21', 0.01, 74.0, 'USC00519281')
+    ('2017-05-22', 0.06, 71.0, 'USC00519281')
+    ('2017-05-23', 0.06, 71.0, 'USC00519281')
+    ('2017-05-24', 0.3, 74.0, 'USC00519281')
+    ('2017-05-25', 0.2, 74.0, 'USC00519281')
+    ('2017-05-26', 0.0, 74.0, 'USC00519281')
+    ('2017-05-27', 0.0, 74.0, 'USC00519281')
+    ('2017-05-28', 0.08, 80.0, 'USC00519281')
+    ('2017-05-29', 0.4, 74.0, 'USC00519281')
+    ('2017-05-30', 1.12, 72.0, 'USC00519281')
+    ('2017-05-31', 0.25, 75.0, 'USC00519281')
+    ('2017-06-01', 0.0, 80.0, 'USC00519281')
+    ('2017-06-02', 0.09, 76.0, 'USC00519281')
+    ('2017-06-03', 0.08, 76.0, 'USC00519281')
+    ('2017-06-04', 0.13, 77.0, 'USC00519281')
+    ('2017-06-05', 0.05, 75.0, 'USC00519281')
+    ('2017-06-06', 0.0, 75.0, 'USC00519281')
+    ('2017-06-07', 0.0, 75.0, 'USC00519281')
+    ('2017-06-08', 0.0, 75.0, 'USC00519281')
+    ('2017-06-09', 0.02, 72.0, 'USC00519281')
+    ('2017-06-10', 0.62, 74.0, 'USC00519281')
+    ('2017-06-11', 0.74, 74.0, 'USC00519281')
+    ('2017-06-12', 0.24, 74.0, 'USC00519281')
+    ('2017-06-13', 0.24, 76.0, 'USC00519281')
+    ('2017-06-14', 0.22, 74.0, 'USC00519281')
+    ('2017-06-15', 0.55, 75.0, 'USC00519281')
+    ('2017-06-16', 0.06, 73.0, 'USC00519281')
+    ('2017-06-17', 0.07, 79.0, 'USC00519281')
+    ('2017-06-18', 0.24, 75.0, 'USC00519281')
+    ('2017-06-19', 0.08, 72.0, 'USC00519281')
+    ('2017-06-20', 0.0, 72.0, 'USC00519281')
+    ('2017-06-21', 0.19, 74.0, 'USC00519281')
+    ('2017-06-22', 0.06, 72.0, 'USC00519281')
+    ('2017-06-23', 0.12, 72.0, 'USC00519281')
+    ('2017-06-24', 0.36, 77.0, 'USC00519281')
+    ('2017-06-25', 0.02, 71.0, 'USC00519281')
+    ('2017-06-26', 0.06, 73.0, 'USC00519281')
+    ('2017-06-27', 0.01, 76.0, 'USC00519281')
+    ('2017-06-28', 0.0, 77.0, 'USC00519281')
+    ('2017-06-29', 0.0, 76.0, 'USC00519281')
+    ('2017-06-30', 0.01, 76.0, 'USC00519281')
+    ('2017-07-01', 0.08, 79.0, 'USC00519281')
+    ('2017-07-02', 0.15, 81.0, 'USC00519281')
+    ('2017-07-03', 0.15, 76.0, 'USC00519281')
+    ('2017-07-04', 0.08, 78.0, 'USC00519281')
+    ('2017-07-05', 0.0, 77.0, 'USC00519281')
+    ('2017-07-06', 0.0, 74.0, 'USC00519281')
+    ('2017-07-07', 0.18, 75.0, 'USC00519281')
+    ('2017-07-08', 0.0, 78.0, 'USC00519281')
+    ('2017-07-09', 0.11, 78.0, 'USC00519281')
+    ('2017-07-10', 0.02, 69.0, 'USC00519281')
+    ('2017-07-11', 0.02, 72.0, 'USC00519281')
+    ('2017-07-12', 0.28, 74.0, 'USC00519281')
+    ('2017-07-13', 0.32, 74.0, 'USC00519281')
+    ('2017-07-14', 0.2, 76.0, 'USC00519281')
+    ('2017-07-15', 0.05, 80.0, 'USC00519281')
+    ('2017-07-16', 0.1, 80.0, 'USC00519281')
+    ('2017-07-17', 0.21, 76.0, 'USC00519281')
+    ('2017-07-18', 0.05, 76.0, 'USC00519281')
+    ('2017-07-19', 0.05, 76.0, 'USC00519281')
+    ('2017-07-20', 0.06, 77.0, 'USC00519281')
+    ('2017-07-21', 0.03, 77.0, 'USC00519281')
+    ('2017-07-22', 0.2, 77.0, 'USC00519281')
+    ('2017-07-23', 0.2, 82.0, 'USC00519281')
+    ('2017-07-24', 0.61, 75.0, 'USC00519281')
+    ('2017-07-25', 0.11, 77.0, 'USC00519281')
+    ('2017-07-26', 0.12, 75.0, 'USC00519281')
+    ('2017-07-27', 0.01, 76.0, 'USC00519281')
+    ('2017-07-28', 0.09, 81.0, 'USC00519281')
+    ('2017-07-29', 0.23, 82.0, 'USC00519281')
+    ('2017-07-30', 0.0, 81.0, 'USC00519281')
+    ('2017-07-31', 0.0, 76.0, 'USC00519281')
+    ('2017-08-04', 0.0, 77.0, 'USC00519281')
+    ('2017-08-05', 0.06, 82.0, 'USC00519281')
+    ('2017-08-06', 0.0, 83.0, 'USC00519281')
+    ('2017-08-13', 0.0, 77.0, 'USC00519281')
+    ('2017-08-14', 0.0, 77.0, 'USC00519281')
+    ('2017-08-15', 0.32, 77.0, 'USC00519281')
+    ('2017-08-16', 0.12, 76.0, 'USC00519281')
+    ('2017-08-17', 0.01, 76.0, 'USC00519281')
+    ('2017-08-18', 0.06, 79.0, 'USC00519281')
     351
     
 
 
 ```python
-temp_freq_dict={"Temperature":temp_list}
-temp_freq_df = pd.DataFrame(temp_freq_dict)
-temp_freq_df.head()
+# temp_dict ={"Temperature":temp_list}
+# temp_df = pd.DataFrame(temp_dict)
+```
+
+
+```python
+# temp_list
+```
+
+
+
+
+    [1,
+     2,
+     3,
+     4,
+     5,
+     6,
+     7,
+     8,
+     9,
+     10,
+     11,
+     12,
+     13,
+     14,
+     15,
+     16,
+     17,
+     18,
+     19,
+     20,
+     21,
+     22,
+     23,
+     24,
+     25,
+     26,
+     27,
+     28,
+     29,
+     30,
+     31,
+     32,
+     33,
+     34,
+     35,
+     36,
+     37,
+     38,
+     39,
+     40,
+     41,
+     42,
+     43,
+     44,
+     45,
+     46,
+     47,
+     48,
+     49,
+     50,
+     51,
+     52,
+     53,
+     54,
+     55,
+     56,
+     57,
+     58,
+     59,
+     60,
+     61,
+     62,
+     63,
+     64,
+     65,
+     66,
+     67,
+     68,
+     69,
+     70,
+     71,
+     72,
+     73,
+     74,
+     75,
+     76,
+     77,
+     78,
+     79,
+     80,
+     81,
+     82,
+     83,
+     84,
+     85,
+     86,
+     87,
+     88,
+     89,
+     90,
+     91,
+     92,
+     93,
+     94,
+     95,
+     96,
+     97,
+     98,
+     99,
+     100,
+     101,
+     102,
+     103,
+     104,
+     105,
+     106,
+     107,
+     108,
+     109,
+     110,
+     111,
+     112,
+     113,
+     114,
+     115,
+     116,
+     117,
+     118,
+     119,
+     120,
+     121,
+     122,
+     123,
+     124,
+     125,
+     126,
+     127,
+     128,
+     129,
+     130,
+     131,
+     132,
+     133,
+     134,
+     135,
+     136,
+     137,
+     138,
+     139,
+     140,
+     141,
+     142,
+     143,
+     144,
+     145,
+     146,
+     147,
+     148,
+     149,
+     150,
+     151,
+     152,
+     153,
+     154,
+     155,
+     156,
+     157,
+     158,
+     159,
+     160,
+     161,
+     162,
+     163,
+     164,
+     165,
+     166,
+     167,
+     168,
+     169,
+     170,
+     171,
+     172,
+     173,
+     174,
+     175,
+     176,
+     177,
+     178,
+     179,
+     180,
+     181,
+     182,
+     183,
+     184,
+     185,
+     186,
+     187,
+     188,
+     189,
+     190,
+     191,
+     192,
+     193,
+     194,
+     195,
+     196,
+     197,
+     198,
+     199,
+     200,
+     201,
+     202,
+     203,
+     204,
+     205,
+     206,
+     207,
+     208,
+     209,
+     210,
+     211,
+     212,
+     213,
+     214,
+     215,
+     216,
+     217,
+     218,
+     219,
+     220,
+     221,
+     222,
+     223,
+     224,
+     225,
+     226,
+     227,
+     228,
+     229,
+     230,
+     231,
+     232,
+     233,
+     234,
+     235,
+     236,
+     237,
+     238,
+     239,
+     240,
+     241,
+     242,
+     243,
+     244,
+     245,
+     246,
+     247,
+     248,
+     249,
+     250,
+     251,
+     252,
+     253,
+     254,
+     255,
+     256,
+     257,
+     258,
+     259,
+     260,
+     261,
+     262,
+     263,
+     264,
+     265,
+     266,
+     267,
+     268,
+     269,
+     270,
+     271,
+     272,
+     273,
+     274,
+     275,
+     276,
+     277,
+     278,
+     279,
+     280,
+     281,
+     282,
+     283,
+     284,
+     285,
+     286,
+     287,
+     288,
+     289,
+     290,
+     291,
+     292,
+     293,
+     294,
+     295,
+     296,
+     297,
+     298,
+     299,
+     300,
+     301,
+     302,
+     303,
+     304,
+     305,
+     306,
+     307,
+     308,
+     309,
+     310,
+     311,
+     312,
+     313,
+     314,
+     315,
+     316,
+     317,
+     318,
+     319,
+     320,
+     321,
+     322,
+     323,
+     324,
+     325,
+     326,
+     327,
+     328,
+     329,
+     330,
+     331,
+     332,
+     333,
+     334,
+     335,
+     336,
+     337,
+     338,
+     339,
+     340,
+     341,
+     342,
+     343,
+     344,
+     345,
+     346,
+     347,
+     348,
+     349,
+     350,
+     351]
+
+
+
+
+```python
+temp_df.head()
+
+
+
 ```
 
 
@@ -1841,10 +2943,8 @@ temp_freq_df.head()
 
     KeyboardInterrupt                         Traceback (most recent call last)
 
-    <ipython-input-27-8d4c80afd2d7> in <module>()
-          1 temp_freq_dict={"Temperature":temp_list}
-          2 temp_freq_df = pd.DataFrame(temp_freq_dict)
-    ----> 3 temp_freq_df.head()
+    <ipython-input-35-9934c5d5c184> in <module>()
+    ----> 1 temp_df.head()
     
 
     C:\Anaconda3\envs\PythonData\lib\site-packages\IPython\core\displayhook.py in __call__(self, result)
@@ -2051,78 +3151,31 @@ temp_freq_df.head()
     
 
     C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in _pprint_seq(seq, _nest_lvl, max_seq_items, **kwds)
-        110         nitems = len(seq)
-        111     else:
-    --> 112         nitems = max_seq_items or get_option("max_seq_items") or len(seq)
-        113 
-        114     s = iter(seq)
+        116     for i in range(min(nitems, len(seq))):  # handle sets, no slicing
+        117         r.append(pprint_thing(
+    --> 118             next(s), _nest_lvl + 1, max_seq_items=max_seq_items, **kwds))
+        119     body = ", ".join(r)
+        120 
     
 
-    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in __call__(self, *args, **kwds)
-        222 
-        223     def __call__(self, *args, **kwds):
-    --> 224         return self.__func__(*args, **kwds)
-        225 
-        226     @property
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in pprint_thing(thing, _nest_lvl, escape_chars, default_escapes, quote_strings, max_seq_items)
+        228         result = fmt.format(thing=as_escaped_unicode(thing))
+        229     else:
+    --> 230         result = as_escaped_unicode(thing)
+        231 
+        232     return compat.text_type(result)  # always unicode
     
 
-    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in _get_option(pat, silent)
-         95 
-         96 def _get_option(pat, silent=False):
-    ---> 97     key = _get_single_key(pat, silent)
-         98 
-         99     # walk the nested dict
-    
-
-    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in _get_single_key(pat, silent)
-         77 
-         78 def _get_single_key(pat, silent):
-    ---> 79     keys = _select_options(pat)
-         80     if len(keys) == 0:
-         81         if not silent:
-    
-
-    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in _select_options(pat)
-        542         return keys
-        543 
-    --> 544     return [k for k in keys if re.search(pat, k, re.I)]
-        545 
-        546 
-    
-
-    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\core\config.py in <listcomp>(.0)
-        542         return keys
-        543 
-    --> 544     return [k for k in keys if re.search(pat, k, re.I)]
-        545 
-        546 
-    
-
-    C:\Anaconda3\envs\PythonData\lib\re.py in search(pattern, string, flags)
-        180     """Scan through string looking for a match to the pattern, returning
-        181     a match object, or None if no match was found."""
-    --> 182     return _compile(pattern, flags).search(string)
-        183 
-        184 def sub(pattern, repl, string, count=0, flags=0):
-    
-
-    C:\Anaconda3\envs\PythonData\lib\re.py in _compile(pattern, flags)
-        286 def _compile(pattern, flags):
-        287     # internal: compile pattern
-    --> 288     try:
-        289         p, loc = _cache[type(pattern), pattern, flags]
-        290         if loc is None or loc == _locale.setlocale(_locale.LC_CTYPE):
+    C:\Anaconda3\envs\PythonData\lib\site-packages\pandas\io\formats\printing.py in as_escaped_unicode(thing, escape_chars)
+        191 
+        192         try:
+    --> 193             result = compat.text_type(thing)  # we should try this first
+        194         except UnicodeDecodeError:
+        195             # either utf-8 or we replace errors
     
 
     KeyboardInterrupt: 
 
-
-
-```python
-temp_freq_df.plot.hist(by="Temperature", bins=12,title="Hawaii - Temperature vs. Frequency")
-plt.savefig("Temperature vs. Frequency.png")
-plt.show()
-```
 
 
 ```python
@@ -2143,6 +3196,9 @@ def calc_temps(start_date, end_date):
         filter(Measurement.date >= start_date).filter(Measurement.date <= end_date).all()
 print(calc_temps('2012-02-28', '2012-03-05'))
 ```
+
+    [(62.0, 69.57142857142857, 74.0)]
+    
 
 
 ```python
@@ -2191,6 +3247,13 @@ def daily_normals(date):
     
 daily_normals("01-01")
 ```
+
+
+
+
+    [(62.0, 69.15384615384616, 77.0)]
+
+
 
 
 ```python
